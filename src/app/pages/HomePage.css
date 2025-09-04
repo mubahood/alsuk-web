@@ -1,0 +1,49 @@
+/* ===================================================================
+   HomePage Styles - Optimized and Organized
+   =================================================================== */
+
+.homepage-container {
+  background: var(--background-body, #ffffff);
+  min-height: 100vh;
+}
+
+.homepage-section {
+  padding: 2rem 0;
+}
+
+.homepage-section:first-child {
+  padding-top: 1rem;
+}
+
+.homepage-section:last-child {
+  padding-bottom: 3rem;
+}
+
+/* Full-width hero section */
+.hero-section-fullwidth {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 0;
+  margin-bottom: 3rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .homepage-section {
+    padding: 1.5rem 0;
+  }
+  
+  .homepage-section:first-child {
+    padding-top: 0.5rem;
+  }
+  
+  .homepage-section:last-child {
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .homepage-section {
+    padding: 1rem 0;
+  }
+}

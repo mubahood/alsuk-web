@@ -1,0 +1,3 @@
+# shop-js
+## Description
+This is a simple shopping cart application that allows users to add items to a cart and view the total cost of the items in the cart. The application is built using React.js and the Metronic template, and it is powered by a Laravel backend. The application uses local storage to store the items in the cart so that the items persist even if the user refreshes the page. The application also uses the Fetch API to fetch the items from a JSON file and display them on the page. The system, named Blitxpress, features #f33d02 and #114786 as its accent colors. The application is responsive and works on all screen sizes.
