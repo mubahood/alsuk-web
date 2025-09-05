@@ -319,6 +319,12 @@ const ModernMainNav: React.FC = () => {
                   </div>
                   <div className="action-text">Wishlist</div>
                 </Link>
+                <Link to="/account/chat" className="action-link">
+                  <div className="action-icon-wrapper">
+                    <i className="bi bi-chat-dots action-icon"></i>
+                  </div>
+                  <div className="action-text">Messages</div>
+                </Link>
               </>
             ) : (
               <>
@@ -421,6 +427,12 @@ const ModernMainNav: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/account/chat" onClick={toggleMenu}>
+                    <i className="bi bi-chat-dots"></i>
+                    <span>Messages</span>
+                  </Link>
+                </li>
+                <li>
                   <Link to="/account/addresses" onClick={toggleMenu}>
                     <i className="bi bi-geo-alt"></i>
                     <span>Addresses</span>
@@ -451,6 +463,12 @@ const ModernMainNav: React.FC = () => {
                     {wishlistCount > 0 && (
                       <span className="mobile-cart-badge">{wishlistCount}</span>
                     )}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/account/chat" onClick={toggleMenu}>
+                    <i className="bi bi-chat-dots"></i>
+                    <span>Messages</span>
                   </Link>
                 </li>
               </ul>

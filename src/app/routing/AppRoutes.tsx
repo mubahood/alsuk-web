@@ -6,6 +6,7 @@ import { Spinner } from "react-bootstrap";
 // Layouts
 import MainLayout from "../components/Layout/MainLayout";
 import AuthLayout from "../components/Layout/AuthLayout";
+import AccountLayoutWrapper from "../components/Layout/AccountLayoutWrapper";
 
 // Route Guards
 import ProtectedRoute from "../components/Auth/ProtectedRoute";
@@ -27,6 +28,10 @@ const WishlistPage = React.lazy(() => import("../pages/WishlistPage"));
 const AboutPage = React.lazy(() => import("../pages/AboutPage"));
 const ContactPage = React.lazy(() => import("../pages/ContactPage"));
 const FAQPage = React.lazy(() => import("../pages/FAQPage"));
+
+// Chat Pages
+const ChatListPage = React.lazy(() => import("../pages/ChatPage/ChatListPage"));
+const ChatConversationPage = React.lazy(() => import("../pages/ChatPage/ChatConversationPage"));
 
 // Legal Pages
 const TermsPage = React.lazy(() => import("../pages/legal/TermsPage"));
@@ -142,21 +147,21 @@ const AppRoutes: React.FC = () => {
             } 
           />
           
-          {/* Account - Protected Routes with Shared Layout */}
+          {/* Account - Protected Routes with Dedicated Layout (no footer) */}
           <Route 
             path="account" 
             element={
               <ProtectedRoute>
-                <Account />
+                <AccountLayoutWrapper />
               </ProtectedRoute>
             }
           >
             <Route index element={<AccountDashboard />} />
             <Route path="profile" element={<AccountProfile />} />
-            <Route path="orders" element={<AccountOrdersPage />} />
-            <Route path="orders/:orderId" element={<OrderDetailsPage />} />
             <Route path="wishlist" element={<AccountWishlist />} />
             <Route path="settings" element={<AccountSettings />} />
+            <Route path="chat" element={<ChatListPage />} />
+            <Route path="chat/:chatHeadId" element={<ChatConversationPage />} />
           </Route>
           
           {/* Static Pages */}

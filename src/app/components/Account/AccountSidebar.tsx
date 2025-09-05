@@ -20,19 +20,19 @@ const AccountSidebar: React.FC = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
 
-  // Simplified menu items - only essential ones
+  // Essential menu items for marketplace users
   const menuItems: MenuItem[] = [
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon: 'bi-house',
+      icon: 'bi-speedometer2',
       path: '/account',
     },
     {
-      id: 'orders',
-      label: 'My Orders',
-      icon: 'bi-bag-check',
-      path: '/account/orders',
+      id: 'chat',
+      label: 'Messages',
+      icon: 'bi-chat-dots',
+      path: '/account/chat',
     },
     {
       id: 'wishlist',
@@ -45,6 +45,12 @@ const AccountSidebar: React.FC = () => {
       label: 'Profile',
       icon: 'bi-person',
       path: '/account/profile',
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: 'bi-gear',
+      path: '/account/settings',
     },
   ];
 

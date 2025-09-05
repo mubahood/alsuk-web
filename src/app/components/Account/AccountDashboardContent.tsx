@@ -3,214 +3,191 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { useAppCounts, useRecentOrders } from '../../hooks/useManifest';
+import { useAppCounts } from '../../hooks/useManifest';
+import AccountPageWrapper from './AccountPageWrapper';
+import AccountCard from './AccountCard';
 
 const AccountDashboardContent: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const appCounts = useAppCounts();
-  const recentOrders = useRecentOrders();
 
-  // Simplified quick actions - only essential ones
+  // Essential marketplace actions
   const quickActions = [
     {
-      title: 'View Orders',
-      description: 'Track your recent orders',
-      icon: 'bi-bag-check',
-      link: '/account/orders',
-      color: 'primary'
+      title: 'Messages',
+      description: 'Chat with sellers and buyers',
+      icon: 'bi-chat-dots',
+      link: '/account/chat',
+      color: 'primary',
+      gradient: 'linear-gradient(135deg, #007bff 0%, #0056b3 100%)'
+    },
+    {
+      title: 'My Wishlist',
+      description: 'View your saved products',
+      icon: 'bi-heart',
+      link: '/account/wishlist',
+      color: 'danger',
+      gradient: 'linear-gradient(135deg, #dc3545 0%, #b02a37 100%)'
     },
     {
       title: 'Update Profile',
       description: 'Manage your account information',
       icon: 'bi-person-gear',
       link: '/account/profile',
-      color: 'success'
+      color: 'success',
+      gradient: 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)'
     },
     {
-      title: 'My Wishlist',
-      description: 'View saved items',
-      icon: 'bi-heart',
-      link: '/account/wishlist',
-      color: 'danger'
+      title: 'Account Settings',
+      description: 'Security and preferences',
+      icon: 'bi-gear',
+      link: '/account/settings',
+      color: 'warning',
+      gradient: 'linear-gradient(135deg, #ffc107 0%, #d39e00 100%)'
     }
   ];
 
-  // Simplified account stats - only relevant ones
+  // Marketplace-focused stats
   const accountStats = [
     {
-      label: 'Total Orders',
-      value: appCounts.total_orders.toString(),
-      icon: 'bi-bag-check',
-      color: 'primary'
+      label: 'Wishlist Items',
+      value: appCounts.wishlist_count?.toString() || '0',
+      icon: 'bi-heart-fill',
+      color: '#dc3545'
     },
     {
-      label: 'Wishlist Items',
-      value: appCounts.wishlist_count.toString(),
-      icon: 'bi-heart',
-      color: 'danger'
+      label: 'Profile Completion',
+      value: user?.complete_profile === 'Yes' ? '100%' : '75%',
+      icon: 'bi-person-check',
+      color: '#28a745'
     },
     {
       label: 'Account Status',
-      value: 'Active',
+      value: user?.status || 'Active',
       icon: 'bi-shield-check',
-      color: 'success'
+      color: '#007bff'
+    },
+    {
+      label: 'Member Since',
+      value: user?.created_at ? new Date(user.created_at).getFullYear().toString() : new Date().getFullYear().toString(),
+      icon: 'bi-calendar-check',
+      color: '#6f42c1'
     }
   ];
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
-    <div className="acc-dashboard-container">
-      {/* Page Header */}
-      <div className="acc-page-header">
-        <div>
-          <h1 className="acc-page-title">
-            Welcome back, {user?.first_name || 'Customer'}!
-          </h1>
-          <p className="acc-page-subtitle">
-            Manage your account, track orders, and update your preferences
-          </p>
-        </div>
-      </div>
-
+    <AccountPageWrapper
+      title={`${getGreeting()}, ${user?.first_name || user?.name?.split(' ')[0] || 'Customer'}!`}
+      subtitle="Welcome to your AL-SUK marketplace dashboard. Manage your account and discover amazing products."
+      icon="bi-speedometer2"
+    >
       {/* Account Stats */}
-      <div className="acc-stats-grid">
-        {accountStats.map((stat, index) => (
-          <div key={index} className="acc-stat-card">
-            <div className={`acc-stat-icon bi ${stat.icon}`}></div>
-            <div className="acc-stat-value">{stat.value}</div>
-            <div className="acc-stat-label">{stat.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div style={{ marginBottom: 'var(--spacing-6)' }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-lg)',
-          fontWeight: 'var(--font-weight-semibold)',
-          color: 'var(--text-color)',
-          marginBottom: 'var(--spacing-4)'
-        }}>
-          Quick Actions
-        </h3>
-        <div className="acc-actions-grid">
-          {quickActions.map((action, index) => (
-            <Link key={index} to={action.link} className="acc-action-card">
-              <div className={`acc-action-icon bi ${action.icon}`}></div>
-              <div className="acc-action-content">
-                <h4>{action.title}</h4>
-                <p>{action.description}</p>
+      <AccountCard
+        title="Account Overview"
+        subtitle="Quick summary of your account activity"
+        icon="bi-graph-up"
+      >
+        <div className="row g-3">
+          {accountStats.map((stat, index) => (
+            <div key={index} className="col-6 col-md-3">
+              <div className="text-center p-3">
+                <div className="mb-2">
+                  <i className={`${stat.icon} fs-2`} style={{ color: stat.color }}></i>
+                </div>
+                <h4 className="mb-1" style={{ color: stat.color }}>
+                  {stat.value}
+                </h4>
+                <h6 className="mb-1">{stat.label}</h6>
+                <small className="text-muted">
+                  {stat.label === 'Wishlist Items' && 'Products you want to buy later'}
+                  {stat.label === 'Profile Completion' && 'Keep your profile updated'}
+                  {stat.label === 'Account Status' && 'Your account is in good standing'}
+                  {stat.label === 'Member Since' && 'Thank you for being with us'}
+                </small>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
-      </div>
+      </AccountCard>
 
-      {/* Recent Orders */}
-      <div className="acc-card">
-        <div className="acc-card-header">
-          <h3 className="acc-card-title">
-            <i className="bi-clock-history"></i>
-            Recent Orders
-          </h3>
-          {recentOrders && recentOrders.length > 0 && (
-            <Link to="/account/orders" className="acc-link-subtle">
-              View All Orders <i className="bi-arrow-right"></i>
-            </Link>
-          )}
-        </div>
-        <div className="acc-card-body">
-          {recentOrders && recentOrders.length > 0 ? (
-            <div className="acc-recent-orders-list">
-              {recentOrders.slice(0, 5).map((order: any, index: number) => (
-                <div key={order.id || index} className="acc-recent-order-item">
-                  <div className="acc-recent-order-main">
-                    <div className="acc-recent-order-info">
-                      <div className="acc-recent-order-header">
-                        <span className="acc-recent-order-id">
-                          Order #{order.id || 'N/A'}
-                        </span>
-                        <span className={`acc-order-status acc-order-status-${order.order_state || '0'}`}>
-                          {order.order_state === '0' && 'Pending'}
-                          {order.order_state === '1' && 'Processing'}
-                          {order.order_state === '2' && 'Completed'}
-                          {order.order_state === '3' && 'Cancelled'}
-                          {order.order_state === '4' && 'Failed'}
-                          {!order.order_state && 'Unknown'}
-                        </span>
-                      </div>
-                      <div className="acc-recent-order-details">
-                        <span className="acc-recent-order-date">
-                          {order.date_created ? new Date(order.date_created).toLocaleDateString() : 'N/A'}
-                        </span>
-                        <span className="acc-recent-order-items">
-                          {order.items ? `${order.items.split(',').length} item(s)` : 'No items'}
-                        </span>
-                      </div>
+      {/* Quick Actions */}
+      <AccountCard
+        title="Quick Actions"
+        subtitle="Access your most used features"
+        icon="bi-lightning"
+      >
+        <div className="row g-3">
+          {quickActions.map((action, index) => (
+            <div key={index} className="col-6 col-md-3">
+              <Link 
+                to={action.link} 
+                className="text-decoration-none"
+              >
+                <div className="card h-100 text-center border-0 shadow-sm">
+                  <div className="card-body p-4">
+                    <div 
+                      className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                      style={{ 
+                        width: '60px', 
+                        height: '60px',
+                        background: action.gradient 
+                      }}
+                    >
+                      <i className={`${action.icon} text-white fs-4`}></i>
                     </div>
-                    <div className="acc-recent-order-amount">
-                      <span className="acc-recent-order-total">
-                        ${order.order_total || '0.00'}
-                      </span>
-                      {order.payment_confirmation === 'PAID' ? (
-                        <span className="acc-payment-status acc-payment-paid">
-                          <i className="bi-check-circle"></i> Paid
-                        </span>
-                      ) : (
-                        <span className="acc-payment-status acc-payment-pending">
-                          <i className="bi-clock"></i> Pending
-                        </span>
-                      )}
-                    </div>
+                    <h6 className="card-title mb-2">{action.title}</h6>
+                    <p className="card-text small text-muted mb-0">
+                      {action.description}
+                    </p>
                   </div>
-                  {index < Math.min(recentOrders.length, 5) - 1 && (
-                    <div className="acc-recent-order-divider"></div>
-                  )}
                 </div>
-              ))}
-              <div className="acc-recent-orders-footer">
-                <Link to="/account/orders" className="acc-btn acc-btn-outline">
-                  View All Orders
-                </Link>
-              </div>
+              </Link>
             </div>
-          ) : (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 'var(--spacing-12) var(--spacing-4)',
-              textAlign: 'center'
-            }}>
-              <div>
-                <i className="bi bi-bag-x" style={{
-                  color: 'var(--text-color-medium)',
-                  fontSize: '3rem',
-                  marginBottom: 'var(--spacing-3)',
-                  display: 'block'
-                }}></i>
-                <h5 style={{
-                  fontSize: 'var(--font-size-lg)',
-                  fontWeight: 'var(--font-weight-semibold)',
-                  color: 'var(--text-color)',
-                  marginBottom: 'var(--spacing-2)'
-                }}>No Recent Orders</h5>
-                <p style={{
-                  color: 'var(--text-color-medium)',
-                  marginBottom: 'var(--spacing-4)',
-                  fontSize: 'var(--font-size-base)'
-                }}>You haven't placed any orders yet. Start shopping to see your order history here.</p>
-                <Link 
-                  to="/products" 
-                  className="acc-btn acc-btn-primary"
-                >
-                  Start Shopping
-                </Link>
-              </div>
-            </div>
-          )}
+          ))}
         </div>
-      </div>
-    </div>
+      </AccountCard>
+
+      {/* Welcome Message */}
+      <AccountCard
+        title="Welcome to AL-SUK Marketplace"
+        subtitle="Your one-stop destination for quality products"
+        icon="bi-shop"
+        className="primary-border"
+      >
+        <div className="text-center">
+          <div className="mb-4">
+            <i className="bi-shop display-1 text-primary"></i>
+          </div>
+          <p className="lead mb-4">
+            Browse thousands of items, connect with trusted sellers, 
+            and enjoy a seamless shopping experience.
+          </p>
+          <div className="d-flex gap-3 justify-content-center flex-wrap">
+            <Link 
+              to="/products" 
+              className="btn btn-primary d-flex align-items-center gap-2"
+            >
+              <i className="bi-search"></i>
+              Browse Products
+            </Link>
+            <Link 
+              to="/categories" 
+              className="btn btn-outline-primary d-flex align-items-center gap-2"
+            >
+              <i className="bi-grid"></i>
+              View Categories
+            </Link>
+          </div>
+        </div>
+      </AccountCard>
+    </AccountPageWrapper>
   );
 };
 

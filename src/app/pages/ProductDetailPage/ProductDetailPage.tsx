@@ -1,5 +1,5 @@
 // src/app/pages/ProductDetailPage/ProductDetailPage.tsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Container,
@@ -17,16 +17,14 @@ import {
   useGetProductsQuery,
 } from "../../services/realProductsApi";
 import { ProductModel } from "../../models/ProductModel";
-import { useDispatch } from "react-redux";
-import { useCart } from "../../hooks/useCart";
+import { useDispatch, useSelector } from "react-redux";
 import { showNotification } from "../../store/slices/notificationSlice";
+import { selectIsAuthenticated, selectUser } from "../../store/slices/authSlice";
 import ProductCard from "../../components/shared/ProductCard";
 import WishlistButton from "../../components/shared/WishlistButton";
 import DynamicBreadcrumb from "../../components/shared/DynamicBreadcrumb";
-import ShimmerImage from "../../components/ShimmerImage";
-import ReviewList from "../../components/reviews/ReviewList";
-import ReviewForm from "../../components/reviews/ReviewForm";
 import Utils from "../../services/Utils";
+import chatService from "../../services/chatService";
 
 // All CSS inline - no external dependencies
 const inlineStyles = `
@@ -69,6 +67,7 @@ const inlineStyles = `
   /* Main Product Container */
   .product-detail-page-container {
     background: var(--white);
+    padding: 1rem;
   }
 
   /* Product Image Gallery */
@@ -79,7 +78,7 @@ const inlineStyles = `
   .main-image-wrapper {
     width: 100%;
     aspect-ratio: 1;
-    background: var(--background-light);
+    background: var(--white);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -89,11 +88,13 @@ const inlineStyles = `
     cursor: pointer;
     transition: all var(--transition-speed) var(--transition-timing);
     position: relative;
+    box-shadow: var(--shadow-sm);
   }
 
   .main-image-wrapper:hover {
     border-color: var(--primary-color);
     box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
   }
 
   .main-image-wrapper img {
@@ -105,6 +106,94 @@ const inlineStyles = `
 
   .main-image-wrapper:hover img {
     transform: scale(1.02);
+  }
+
+  /* Improved thumbnail row with horizontal scroll */
+  .thumbnail-container {
+    position: relative;
+    margin-top: var(--spacing-md);
+  }
+
+  .thumbnail-scroll-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .thumbnail-scroll-button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--text-color-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--transition-timing);
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .thumbnail-scroll-button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .thumbnail-scroll-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .thumbnail-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    padding: 2px;
+  }
+
+  .thumbnail-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thumb-wrapper {
+    width: 70px;
+    height: 70px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--transition-timing);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .thumb-wrapper:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .thumb-wrapper.selected-thumb {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+  }
+
+  .thumb-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .discount-badge {
@@ -207,37 +296,6 @@ const inlineStyles = `
     font-weight: 500;
     font-size: 13px;
     border: none;
-  }
-
-  .rating-container {
-    background: var(--background-light);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-md);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .rating-stars {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-
-  .rating-stars i {
-    color: var(--warning-color);
-    font-size: 1rem;
-  }
-
-  .rating-value {
-    font-weight: 600;
-    color: var(--text-color-dark);
-  }
-
-  .rating-count {
-    color: var(--text-color-medium);
-    font-size: 14px;
   }
 
   /* Share Buttons */
@@ -430,34 +488,6 @@ const inlineStyles = `
     box-shadow: var(--shadow-sm);
   }
 
-  /* Quantity */
-  .quantity-section {
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .quantity-label {
-    font-weight: 600;
-    color: var(--text-color-dark);
-    margin-bottom: var(--spacing-sm);
-    display: block;
-    font-size: 14px;
-  }
-
-  .quantity-input {
-    width: 90px;
-    padding: var(--spacing-sm);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    text-align: center;
-    transition: all var(--transition-speed) var(--transition-timing);
-    font-size: 14px;
-  }
-
-  .quantity-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
-    outline: none;
   }
 
   /* Action Buttons */
@@ -542,6 +572,117 @@ const inlineStyles = `
 
   .btn-checkout:focus {
     box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+  }
+
+  /* Contact Actions */
+  .contact-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+
+  .btn-chat-seller,
+  .btn-whatsapp,
+  .btn-call-seller {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-speed) var(--transition-timing);
+    border: none;
+    font-size: 15px;
+    min-height: 48px;
+  }
+
+  .btn-chat-seller {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+
+  .btn-chat-seller:hover {
+    background: var(--primary-color-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-whatsapp {
+    background: #25d366;
+    color: var(--white);
+  }
+
+  .btn-whatsapp:hover {
+    background: #128c7e;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-call-seller {
+    background: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+  }
+
+  .btn-call-seller:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Safety Tips Card */
+  .safety-tips-card {
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-2xl);
+  }
+
+  .safety-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .safety-header i {
+    color: var(--success-color);
+    font-size: 18px;
+  }
+
+  .safety-header h6 {
+    margin: 0;
+    color: var(--text-color-dark);
+    font-weight: 600;
+  }
+
+  .safety-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .safety-tip {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+  }
+
+  .safety-tip i {
+    color: var(--text-color-medium);
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+  }
+
+  .safety-tip span {
+    color: var(--text-color-medium);
+    font-size: 14px;
   }
 
   /* Product Tabs */
@@ -759,17 +900,17 @@ const inlineStyles = `
   .related-products {
     background: var(--white);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);
     padding: 1.5rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
 
   .related-products h3 {
     color: var(--text-color-dark);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 1.5rem;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -777,9 +918,9 @@ const inlineStyles = `
 
   .related-products h3::before {
     content: "";
-    width: 3px;
-    height: 20px;
-    background: var(--primary-color);
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     border-radius: 2px;
   }
 
@@ -804,31 +945,32 @@ const inlineStyles = `
   }
 
   .related-product-item {
-    flex: 0 0 200px;
-    min-width: 200px;
+    flex: 0 0 220px;
+    min-width: 220px;
   }
 
   .related-product-card {
     background: var(--white);
     border: 1px solid var(--border-color-light);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
   .related-product-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     border-color: var(--primary-color);
   }
 
   .related-product-image {
     position: relative;
     width: 100%;
-    height: 150px;
+    height: 160px;
     overflow: hidden;
     background: var(--bg-light);
   }
@@ -845,15 +987,15 @@ const inlineStyles = `
   }
 
   .related-product-content {
-    padding: 0.75rem;
+    padding: 1rem;
     flex: 1;
     display: flex;
     flex-direction: column;
   }
 
   .related-product-title {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: var(--text-color-dark);
     margin-bottom: 0.5rem;
     line-height: 1.3;
@@ -873,17 +1015,18 @@ const inlineStyles = `
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
 
   .related-product-price-current {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--primary-color);
   }
 
   .related-product-price-original {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-color-muted);
     text-decoration: line-through;
   }
@@ -892,9 +1035,9 @@ const inlineStyles = `
     background: var(--accent-color);
     color: white;
     font-size: 0.7rem;
-    font-weight: 500;
-    padding: 0.15rem 0.4rem;
-    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
   }
 
   .related-product-actions {
@@ -904,11 +1047,11 @@ const inlineStyles = `
 
   .related-product-btn {
     flex: 1;
-    padding: 0.4rem 0.5rem;
+    padding: 0.6rem 0.8rem;
     border: none;
     border-radius: var(--border-radius);
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
@@ -927,6 +1070,7 @@ const inlineStyles = `
   .related-product-btn-primary:hover {
     background: var(--primary-color-dark);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
   }
 
   .related-product-btn-outline {
@@ -939,6 +1083,7 @@ const inlineStyles = `
     border-color: var(--primary-color);
     color: var(--primary-color);
     background: var(--primary-color-light);
+    text-decoration: none;
   }
 
   .slider-button {
@@ -1324,13 +1469,13 @@ const inlineStyles = `
     }
 
     .product-detail-page-container {
-      padding: var(--spacing-lg);
+      padding: 0.75rem;
     }
   }
 
   @media (max-width: 767.98px) {
     .product-detail-page-container {
-      padding: var(--spacing-md);
+      padding: 0.5rem;
     }
 
     .product-title {
@@ -1731,55 +1876,64 @@ const inlineStyles = `
     display: none;
   }
 
-  .mobile-action-buttons {
+  .mobile-contact-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
     max-width: 500px;
     margin: 0 auto;
   }
 
-  .mobile-btn-add-to-cart,
-  .mobile-btn-buy-now {
+  .mobile-btn-call,
+  .mobile-btn-whatsapp,
+  .mobile-btn-chat {
     flex: 1;
-    padding: 0.875rem 1rem;
+    padding: 0.875rem 0.5rem;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     border-radius: var(--border-radius);
-    border: 2px solid var(--primary-color);
+    border: none;
     transition: all var(--transition-speed) var(--transition-timing);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    min-height: 60px;
   }
 
-  .mobile-btn-add-to-cart {
+  .mobile-btn-call {
     background: var(--white);
     color: var(--primary-color);
+    border: 2px solid var(--primary-color);
   }
 
-  .mobile-btn-add-to-cart:hover:not(:disabled) {
-    background: var(--primary-color-light);
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-
-  .mobile-btn-buy-now {
+  .mobile-btn-call:hover {
     background: var(--primary-color);
     color: var(--white);
-    border-color: var(--primary-color);
   }
 
-  .mobile-btn-buy-now:hover:not(:disabled) {
-    background: var(--primary-color-dark);
+  .mobile-btn-whatsapp {
+    background: #25d366;
     color: var(--white);
-    border-color: var(--primary-color-dark);
   }
 
-  .mobile-btn-add-to-cart:disabled,
-  .mobile-btn-buy-now:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  .mobile-btn-whatsapp:hover {
+    background: #128c7e;
+  }
+
+  .mobile-btn-chat {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+
+  .mobile-btn-chat:hover {
+    background: var(--primary-color-dark);
+  }
+
+  .mobile-btn-call i,
+  .mobile-btn-whatsapp i,
+  .mobile-btn-chat i {
+    font-size: 1.2rem;
   }
 
   /* Show mobile bar only on mobile devices */
@@ -1892,6 +2046,41 @@ const inlineStyles = `
 
   /* Mobile responsiveness for section titles */
   @media (max-width: 768px) {
+    /* Mobile page layout improvements */
+    .container {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    /* Breadcrumb mobile spacing */
+    .breadcrumb {
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* Card spacing on mobile */
+    .card {
+      margin-bottom: 0.5rem !important;
+    }
+
+    .card-body {
+      padding: 0.75rem !important;
+    }
+
+    /* Mobile product layout */
+    .product-image-gallery {
+      margin-bottom: 1rem;
+    }
+
+    .main-image-wrapper {
+      margin-bottom: 0.75rem;
+    }
+
+    /* Ensure content doesn't get hidden behind mobile sticky bar */
+    body {
+      padding-bottom: 80px;
+    }
+
     .section-title,
     .card-body h5:first-child,
     .product-attributes h5,
@@ -1910,6 +2099,185 @@ const inlineStyles = `
     .related-products h3::after {
       width: 40px;
     }
+
+    /* Mobile image gallery improvements */
+    .product-image-gallery {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .main-image-wrapper {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .thumbnail-container {
+      margin-top: var(--spacing-sm);
+    }
+
+    .thumbnail-scroll-button {
+      width: 28px;
+      height: 28px;
+    }
+
+    .thumb-wrapper {
+      width: 60px;
+      height: 60px;
+    }
+
+    /* Mobile contact actions */
+    .contact-actions {
+      margin-top: var(--spacing-md);
+    }
+
+    .btn-chat-seller,
+    .btn-whatsapp,
+    .btn-call-seller {
+      min-height: 52px;
+      font-size: 16px;
+    }
+
+    /* Mobile safety tips */
+    .safety-tips-card {
+      margin-top: var(--spacing-lg);
+      padding: var(--spacing-md);
+    }
+
+    .safety-tip {
+      padding: var(--spacing-sm) 0;
+    }
+
+    .safety-tip span {
+      font-size: 15px;
+    }
+
+    /* Mobile Related Products */
+    .related-products {
+      padding: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .related-products h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .related-product-item {
+      flex: 0 0 180px;
+      min-width: 180px;
+    }
+
+    .related-product-image {
+      height: 140px;
+    }
+
+    .related-product-content {
+      padding: 0.75rem;
+    }
+
+    .related-product-title {
+      font-size: 0.85rem;
+    }
+
+    .related-product-price-current {
+      font-size: 0.9rem;
+    }
+
+    .related-product-btn {
+      padding: 0.5rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    /* Improve mobile product info layout */
+    .product-detail-page-container {
+      padding: 0.5rem !important;
+    }
+
+    /* Better mobile pricing */
+    .price-section {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    /* Mobile-friendly variants */
+    .variant-selector button {
+      min-height: 44px;
+      font-size: 15px;
+    }
+
+  }
+
+  /* Extra small devices */
+  @media (max-width: 480px) {
+    /* Tighter spacing for very small screens */
+    .container {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+
+    .card-body {
+      padding: 0.5rem !important;
+    }
+
+    .contact-actions {
+      gap: 0.5rem;
+    }
+
+    .thumbnail-scroll-button {
+      width: 24px;
+      height: 24px;
+    }
+
+    .thumb-wrapper {
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Extra small Related Products */
+    .related-products {
+      padding: 0.5rem;
+    }
+
+    .related-product-item {
+      flex: 0 0 160px;
+      min-width: 160px;
+    }
+
+    .related-product-image {
+      height: 120px;
+    }
+
+    .related-product-content {
+      padding: 0.5rem;
+    }
+
+    .related-product-title {
+      font-size: 0.8rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .related-product-price {
+      margin-bottom: 0.75rem;
+    }
+
+    .related-product-price-current {
+      font-size: 0.85rem;
+    }
+
+    .related-product-btn {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .safety-tips-card {
+      padding: var(--spacing-sm);
+    }
+
+    .safety-header h6 {
+      font-size: 15px;
+    }
+
+    .safety-tip span {
+      font-size: 14px;
+    }
   }
 `;
 
@@ -1921,7 +2289,10 @@ const ProductDetailPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addToCart: addToCartHook, isInCart } = useCart();
+
+  // Auth selectors
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const currentUser = useSelector(selectUser);
 
   const productId = useMemo(() => parseInt(id || "0", 10), [id]);
 
@@ -1950,29 +2321,25 @@ const ProductDetailPage: React.FC = () => {
   const relatedProducts = relatedProductsData?.data || [];
 
   // Local UI state
-  const [selectedImage, setSelectedImage] = useState<string>("");
-  const [imageErrored, setImageErrored] = useState(false);
-  const [quantity, setQuantity] = useState(1);
   const [variantsSelection, setVariantsSelection] = useState<
     Record<string, string>
   >({});
   const [showModal, setShowModal] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(0);
   const [modalImageIndex, setModalImageIndex] = useState(0);
-  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [chatLoading, setChatLoading] = useState(false);
 
   // Handle tag click navigation
   const handleTagClick = (tag: string) => {
     navigate(`/search?q=${encodeURIComponent(tag)}`);
   };
 
-  // Initialize image & variants when product loads
+  // Initialize variants when product loads
   useEffect(() => {
     if (!product) return;
 
     try {
-      setSelectedImage(product.getMainImage());
-      setImageErrored(false);
+      setSelectedImageIndex(0); // Reset to first image
 
       const initial: Record<string, string> = {};
       if (product.variants && typeof product.variants === "object") {
@@ -1985,8 +2352,6 @@ const ProductDetailPage: React.FC = () => {
       setVariantsSelection(initial);
     } catch (error) {
       console.error("Error initializing product data:", error);
-      setSelectedImage("/media/svg/files/blank-image.svg");
-      setImageErrored(true);
     }
   }, [product]);
 
@@ -2072,126 +2437,8 @@ const ProductDetailPage: React.FC = () => {
   );
 
   // Handlers
-  const onQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value, 10);
-    if (isNaN(val)) return setQuantity(1);
-    if (val < 1) return setQuantity(1);
-    if (val > remaining) {
-      dispatch(
-        showNotification({
-          message: `Only ${remaining} available`,
-          type: "warning",
-        })
-      );
-      return setQuantity(remaining);
-    }
-    setQuantity(val);
-  };
-
   const onVariantSelect = (type: string, option: string) =>
     setVariantsSelection((prev) => ({ ...prev, [type]: option }));
-
-  const onAddToCart = async () => {
-    try {
-      if (outOfStock || quantity < 1) {
-        dispatch(
-          showNotification({
-            message: "Cannot add to cart – out of stock or invalid quantity.",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const variant = {
-        color: variantsSelection.Color || variantsSelection.color || "",
-        size: variantsSelection.Size || variantsSelection.size || "",
-        ...variantsSelection,
-      };
-
-      if (product) {
-        const success = await addToCartHook(product, quantity, variant);
-
-        if (success) {
-          setQuantity(1);
-        }
-      }
-    } catch (error) {
-      console.error("Error in onAddToCart:", error);
-      dispatch(
-        showNotification({
-          message: "Failed to add item to cart",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const onBuyNow = async () => {
-    if (outOfStock || quantity < 1) {
-      dispatch(
-        showNotification({
-          message: "Cannot proceed – out of stock or invalid quantity.",
-          type: "error",
-        })
-      );
-      return;
-    }
-
-    const variant = {
-      color: variantsSelection.Color || variantsSelection.color || "",
-      size: variantsSelection.Size || variantsSelection.size || "",
-      ...variantsSelection,
-    };
-
-    if (product) {
-      // If not in cart, add it first
-      if (!productInCart) {
-        const success = await addToCartHook(product, quantity, variant);
-        if (!success) {
-          dispatch(
-            showNotification({
-              message: "Failed to add item to cart",
-              type: "error",
-            })
-          );
-          return;
-        }
-      }
-
-      // Navigate to checkout
-      dispatch(
-        showNotification({
-          message: `Proceeding to checkout...`,
-          type: "info",
-        })
-      );
-      
-      // Redirect to checkout page
-      navigate("/checkout");
-    }
-  };
-
-  const renderStars = (rate: number) => {
-    const full = Math.floor(rate);
-    const half = rate % 1 >= 0.5;
-    const empty = 5 - full - (half ? 1 : 0);
-    return (
-      <>
-        {Array(full)
-          .fill(0)
-          .map((_, i) => (
-            <i key={`f${i}`} className="bi bi-star-fill" />
-          ))}
-        {half && <i className="bi bi-star-half" />}
-        {Array(empty)
-          .fill(0)
-          .map((_, i) => (
-            <i key={`e${i}`} className="bi bi-star" />
-          ))}
-      </>
-    );
-  };
 
   // Slider handlers
   const handleSliderPrev = () => {
@@ -2212,36 +2459,95 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  // Modal navigation handlers
-  const gallery = useMemo(() => {
-    if (!product) return [];
-
-    try {
-      const mainImage =
-        product.getMainImage && typeof product.getMainImage === "function"
-          ? product.getMainImage()
-          : product.feature_photo || "/media/svg/files/blank-image.svg";
-
-      const allImages =
-        product.getAllImages && typeof product.getAllImages === "function"
-          ? product.getAllImages() || []
-          : [];
-
-      // Combine main image with all images and remove duplicates
-      const imageSet = new Set([mainImage, ...allImages].filter(Boolean));
-      const uniqueImages = Array.from(imageSet);
-
-      return uniqueImages;
-    } catch (error) {
-      console.error("Error generating gallery:", error);
-      return ["/media/svg/files/blank-image.svg"];
+  // Get image URL - handle both cases (copied from working HomePage implementation)
+  const getImageUrl = (imageUrl: string) => {
+    if (imageUrl) {
+      // If it's already a full URL, return as is
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      }
+      
+      // Extract just the filename from the imageUrl path
+      const filename = imageUrl.split('/').pop() || imageUrl;
+      
+      // Construct URL with proper storage path structure
+      const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:8888/alsuk-backend';
+      return `${baseUrl}/storage/images/${filename}`;
     }
-  }, [product]);
+    return "/media/svg/files/blank-image.svg";
+  };
 
-  const handleModalOpen = (clickedImage: string) => {
-    const imageIndex = gallery.findIndex((img) => img === clickedImage);
-    const finalIndex = imageIndex >= 0 ? imageIndex : 0;
-    setModalImageIndex(finalIndex);
+  // Get all images for gallery
+  const getGalleryImages = (product: ProductModel) => {
+    const images: string[] = [];
+    
+    // Add main feature photo
+    if (product.feature_photo) {
+      images.push(getImageUrl(product.feature_photo));
+    }
+    
+    // Add additional images from rates array (product gallery)
+    try {
+      if (product.rates && typeof product.rates === 'string') {
+        const ratesArray = JSON.parse(product.rates);
+        if (Array.isArray(ratesArray)) {
+          ratesArray.forEach((item: any) => {
+            if (item.src) {
+              images.push(getImageUrl(item.src));
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.warn('Error parsing product gallery images:', error);
+    }
+    
+    // Remove duplicates and filter out invalid URLs
+    const uniqueImages = Array.from(new Set(images))
+      .filter(img => img && img !== "/media/svg/files/blank-image.svg");
+    
+    // Always have at least one image (fallback)
+    return uniqueImages.length > 0 ? uniqueImages : ["/media/svg/files/blank-image.svg"];
+  };
+
+  // Gallery state
+  const gallery = useMemo(() => product ? getGalleryImages(product) : [], [product]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const selectedImage = gallery[selectedImageIndex] || "/media/svg/files/blank-image.svg";
+
+  // Thumbnail scroll state
+  const [thumbnailScrollPosition, setThumbnailScrollPosition] = useState(0);
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+
+  // Update selected image when gallery changes
+  useEffect(() => {
+    if (gallery.length > 0 && selectedImageIndex >= gallery.length) {
+      setSelectedImageIndex(0);
+    }
+  }, [gallery, selectedImageIndex]);
+
+  // Thumbnail scroll functions
+  const scrollThumbnails = (direction: 'left' | 'right') => {
+    const container = thumbnailContainerRef.current;
+    if (!container) return;
+    
+    const scrollAmount = 150; // Adjust based on thumbnail width + gap
+    const newPosition = direction === 'left' 
+      ? Math.max(0, thumbnailScrollPosition - scrollAmount)
+      : Math.min(container.scrollWidth - container.clientWidth, thumbnailScrollPosition + scrollAmount);
+    
+    setThumbnailScrollPosition(newPosition);
+    container.scrollTo({ left: newPosition, behavior: 'smooth' });
+  };
+
+  const canScrollLeft = thumbnailScrollPosition > 0;
+  const canScrollRight = thumbnailContainerRef.current 
+    ? thumbnailScrollPosition < (thumbnailContainerRef.current.scrollWidth - thumbnailContainerRef.current.clientWidth)
+    : false;
+
+  // Modal navigation handlers
+  const handleModalOpen = (imageIndex: number) => {
+    setModalImageIndex(imageIndex);
     setShowModal(true);
   };
 
@@ -2262,28 +2568,11 @@ const ProductDetailPage: React.FC = () => {
   };
 
   // Get current modal image with fallback
-  const currentModalImage = useMemo(() => {
-    if (!gallery.length) {
-      return selectedImage || "/media/svg/files/blank-image.svg";
-    }
-    const image = gallery[modalImageIndex] || gallery[0] || selectedImage;
-    return image || "/media/svg/files/blank-image.svg";
-  }, [gallery, modalImageIndex, selectedImage]);
+  const currentModalImage = gallery[modalImageIndex] || selectedImage;
 
   // Touch/swipe support for mobile modal navigation
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-  // Check if current product with selected variants is in cart
-  const productInCart = useMemo(() => {
-    if (!product) return false;
-    const currentVariant = {
-      color: variantsSelection.Color || variantsSelection.color || "",
-      size: variantsSelection.Size || variantsSelection.size || "",
-      ...variantsSelection,
-    };
-    return isInCart(product.id, currentVariant);
-  }, [product, variantsSelection, isInCart]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -2378,30 +2667,28 @@ const ProductDetailPage: React.FC = () => {
     <>
       <style dangerouslySetInnerHTML={{ __html: inlineStyles }} />
       <DynamicBreadcrumb />
-      <Container className="my-0">
-        <Row>
+      <Container className="my-0 px-2 px-md-3">
+        <Row className="g-2 g-md-3">
           {/* Main Content Area - Left Side */}
           <Col lg={8} md={7}>
             {/* Product Images and Basic Info */}
-            <Card className="border-0 shadow-none">
-              <Card.Body className="p-4 product-detail-page-container">
-                <Row>
+            <Card className="border-0 shadow-none mb-2 mb-md-3">
+              <Card.Body className="p-2 p-md-4 product-detail-page-container">
+                <Row className="g-2 g-md-3">
                   {/* Product Images */}
-                  <Col md={6} className="mb-2">
+                  <Col md={6} className="mb-2 mb-md-3">
                     <div className="product-image-gallery">
                       <div
                         className="main-image-wrapper"
-                        onClick={() => handleModalOpen(selectedImage)}
+                        onClick={() => handleModalOpen(selectedImageIndex)}
                       >
-                        <ShimmerImage
-                          src={
-                            imageErrored
-                              ? "/media/svg/files/blank-image.svg"
-                              : selectedImage
-                          }
+                        <img
+                          src={selectedImage}
                           alt={product.name}
                           className="img-fluid"
-                          onError={() => setImageErrored(true)}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/media/svg/files/blank-image.svg";
+                          }}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -2410,44 +2697,70 @@ const ProductDetailPage: React.FC = () => {
                             transition:
                               "transform var(--transition-speed) var(--transition-timing)",
                           }}
-                          objectFit="contain"
-                          loaderBackgroundColor="var(--background-light)"
-                          loaderForegroundColor="var(--border-color)"
                         />
                         {discount > 0 && (
                           <span className="discount-badge">-{discount}%</span>
                         )}
                       </div>
 
-                      {/* Thumbnails */}
-                      <div className="thumbnail-row mt-3">
-                        {gallery.map((url, idx) => (
-                          <div
-                            key={idx}
-                            className={`thumb-wrapper ${
-                              url === selectedImage ? "selected-thumb" : ""
-                            }`}
-                            onClick={() => {
-                              setSelectedImage(url);
-                              setImageErrored(false);
-                            }}
-                          >
-                            <ShimmerImage
-                              src={url}
-                              alt={`Thumb ${idx + 1}`}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                                cursor: "pointer",
-                              }}
-                              objectFit="contain"
-                              loaderBackgroundColor="var(--background-light)"
-                              loaderForegroundColor="var(--border-color)"
-                            />
+                      {/* Horizontal Scroll Thumbnails */}
+                      {gallery.length > 1 && (
+                        <div className="thumbnail-container">
+                          <div className="thumbnail-scroll-wrapper">
+                            <button
+                              type="button"
+                              className="thumbnail-scroll-button"
+                              onClick={() => scrollThumbnails('left')}
+                              disabled={!canScrollLeft}
+                              aria-label="Scroll thumbnails left"
+                            >
+                              <i className="bi bi-chevron-left"></i>
+                            </button>
+                            
+                            <div 
+                              className="thumbnail-row" 
+                              ref={thumbnailContainerRef}
+                              onScroll={(e) => setThumbnailScrollPosition(e.currentTarget.scrollLeft)}
+                            >
+                              {gallery.map((url, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`thumb-wrapper ${
+                                    idx === selectedImageIndex ? "selected-thumb" : ""
+                                  }`}
+                                  onClick={() => {
+                                    setSelectedImageIndex(idx);
+                                  }}
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`Thumbnail ${idx + 1}`}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "contain",
+                                      cursor: "pointer",
+                                    }}
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src = "/media/svg/files/blank-image.svg";
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            
+                            <button
+                              type="button"
+                              className="thumbnail-scroll-button"
+                              onClick={() => scrollThumbnails('right')}
+                              disabled={!canScrollRight}
+                              aria-label="Scroll thumbnails right"
+                            >
+                              <i className="bi bi-chevron-right"></i>
+                            </button>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      )}
                     </div>
 
                     <hr className="my-2" style={{ borderColor: "lightgrey" }} />
@@ -2491,7 +2804,7 @@ const ProductDetailPage: React.FC = () => {
                   </Col>
 
                   {/* Basic Product Info */}
-                  <Col md={6} className="mb-4">
+                  <Col md={6} className="mb-2 mb-md-4">
                     <div className="d-flex justify-content-between align-items-start mb-3">
                       <span className="category-badge">
                         {product.category_text || "Uncategorized"}
@@ -2506,23 +2819,6 @@ const ProductDetailPage: React.FC = () => {
                     </div>
 
                     <h1 className="product-title">{product.name}</h1>
-
-                    {/* Rating */}
-                    {product.rating && Number(product.rating) > 0 && (
-                      <div className="rating-container mb-4">
-                        <div className="rating-stars">
-                          {renderStars(Number(product.rating))}
-                        </div>
-                        <span className="rating-value">
-                          {Number(product.rating).toFixed(1)}
-                        </span>
-                        <span className="rating-count">
-                          ({Number(product.reviewsCount) || 0} review
-                          {(Number(product.reviewsCount) || 0) !== 1 ? "s" : ""}
-                          )
-                        </span>
-                      </div>
-                    )}
 
                     {/* Product Attributes/Specifications */}
                     {Array.isArray(product.attributes_array) &&
@@ -2712,50 +3008,143 @@ const ProductDetailPage: React.FC = () => {
                     </div>
                   )}
 
-                {/* Quantity Selection */}
-                <div className="quantity-section w-100 mt-0">
-                  <label className="quantity-label">Quantity:</label>
-                  <Form.Control
-                  type="number"
-                  min="1"
-                  max={remaining}
-                  value={quantity}
-                  onChange={onQuantityChange}
-                  disabled={outOfStock}
-                  className="quantity-input w-100"
-                  />
+                {/* Contact Actions */}
+                <div className="contact-actions">
+                  <Button
+                    className="btn-chat-seller"
+                    disabled={chatLoading}
+                    onClick={async () => {
+                      console.log('Chat with Seller button clicked!');
+                      console.log('Authentication state:', { isAuthenticated, currentUser });
+                      
+                      setChatLoading(true);
+                      try {
+                        // Check if user is authenticated
+                        if (!isAuthenticated || !currentUser) {
+                          console.log('User not authenticated, redirecting to login');
+                          dispatch(showNotification({
+                            type: 'error',
+                            message: 'Please login to start a chat'
+                          }));
+                          navigate('/auth/login');
+                          return;
+                        }
+
+                        // Get current user ID from Redux state
+                        const currentUserId = currentUser.id?.toString();
+                        if (!currentUserId) {
+                          dispatch(showNotification({
+                            type: 'error',
+                            message: 'User ID not found. Please login again.'
+                          }));
+                          navigate('/auth/login');
+                          return;
+                        }
+
+                        // Check if trying to chat with own product
+                        if (product.user?.toString() === currentUserId) {
+                          dispatch(showNotification({
+                            type: 'error',
+                            message: 'You cannot chat with yourself'
+                          }));
+                          return;
+                        }
+
+                        // Start chat
+                        const response = await chatService.startChat({
+                          sender_id: currentUserId,
+                          receiver_id: product.user?.toString() || '',
+                          product_id: product.id?.toString() || ''
+                        });
+
+                        if (response.code === 1) {
+                          // Navigate to chat conversation
+                          navigate(`/account/chat/${response.data.id}`, {
+                            state: {
+                              chatHead: response.data,
+                              receiverId: product.user?.toString(),
+                              senderId: currentUserId,
+                            }
+                          });
+                        } else {
+                          dispatch(showNotification({
+                            type: 'error',
+                            message: response.message || 'Failed to start chat'
+                          }));
+                        }
+                      } catch (error) {
+                        console.error('Error starting chat:', error);
+                        dispatch(showNotification({
+                          type: 'error',
+                          message: 'Failed to start chat. Please try again.'
+                        }));
+                      } finally {
+                        setChatLoading(false);
+                      }
+                    }}
+                  >
+                    {chatLoading ? (
+                      <>
+                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                        <span className="ms-2">Starting chat...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-chat-dots"></i>
+                        Chat with Seller
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    className="btn-whatsapp"
+                    onClick={() => {
+                      const message = `Hi! I'm interested in this product: ${product.name} - ${window.location.href}`;
+                      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                      window.open(whatsappUrl, '_blank');
+                    }}
+                  >
+                    <i className="bi bi-whatsapp"></i>
+                    WhatsApp
+                  </Button>
+                  <Button
+                    className="btn-call-seller"
+                    onClick={() => {
+                      if (product.url && product.url.length > 5) {
+                        window.open(`tel:${product.url}`, '_self');
+                      } else {
+                        alert('No phone number available for this seller');
+                      }
+                    }}
+                  >
+                    <i className="bi bi-telephone"></i>
+                    Call Seller
+                  </Button>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="action-buttons">
-                  <Button
-                    className="btn-add-to-cart"
-                    onClick={onAddToCart}
-                    disabled={outOfStock}
-                  >
-                    <i className="bi bi-cart-plus"></i>
-                    Add to Cart
-                  </Button>
-                  <Button
-                    className="btn-buy-now"
-                    onClick={onBuyNow}
-                    disabled={outOfStock}
-                  >
-                    <i className="bi bi-lightning"></i>
-                    Buy Now
-                  </Button>
-                  
-                  {/* Checkout Button - Shows when product is in cart */}
-                  {productInCart && (
-                    <Button
-                      className="btn-checkout"
-                      onClick={() => navigate("/checkout")}
-                      variant="success"
-                    >
-                      <i className="bi bi-check-circle me-2"></i>
-                      Proceed to Checkout
-                    </Button>
-                  )}
+                {/* Safety Tips */}
+                <div className="safety-tips-card">
+                  <div className="safety-header">
+                    <i className="bi bi-shield-check"></i>
+                    <h6>Stay Safe Tips</h6>
+                  </div>
+                  <div className="safety-content">
+                    <div className="safety-tip">
+                      <i className="bi bi-eye"></i>
+                      <span>Meet in a public place when possible</span>
+                    </div>
+                    <div className="safety-tip">
+                      <i className="bi bi-cash"></i>
+                      <span>Inspect the product before payment</span>
+                    </div>
+                    <div className="safety-tip">
+                      <i className="bi bi-shield"></i>
+                      <span>Avoid sharing personal information</span>
+                    </div>
+                    <div className="safety-tip">
+                      <i className="bi bi-exclamation-triangle"></i>
+                      <span>Report suspicious activities</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Page Navigator */}
@@ -2780,17 +3169,6 @@ const ProductDetailPage: React.FC = () => {
                       type="button"
                       className="nav-link-btn"
                       onClick={() => {
-                        const element = document.querySelector('[data-section="reviews"]');
-                        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }}
-                    >
-                      <i className="bi bi-star"></i>
-                      <span>Reviews</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="nav-link-btn"
-                      onClick={() => {
                         const element = document.querySelector('.related-products');
                         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }}
@@ -2806,16 +3184,6 @@ const ProductDetailPage: React.FC = () => {
         </Row>
         {/* Product Details Cards */}
         <Row className="mt-4">
-          {/* Reviews Card */}
-          <Col xs={12} className="mb-4">
-            <div data-section="reviews">
-              <ReviewList
-                productId={product.id}
-                onWriteReviewClick={() => setShowReviewModal(true)}
-                showWriteReviewButton={true}
-              />
-            </div>
-          </Col>
         </Row>
 
         {/* Fullscreen Image Modal */}
@@ -2865,11 +3233,9 @@ const ProductDetailPage: React.FC = () => {
 
               <div className="modal-image-wrapper">
                 {currentModalImage ? (
-                  <ShimmerImage
+                  <img
                     src={currentModalImage}
                     alt={`${product.name} - Image ${modalImageIndex + 1}`}
-                    width="100%"
-                    height="100%"
                     style={{
                       width: "100%",
                       height: "100%",
@@ -2879,12 +3245,8 @@ const ProductDetailPage: React.FC = () => {
                       borderRadius: "0px",
                       display: "block",
                     }}
-                    objectFit="contain"
-                    loaderBackgroundColor="rgba(255, 255, 255, 0.2)"
-                    loaderForegroundColor="rgba(255, 255, 255, 0.4)"
-                    loaderSpeed={1.2}
                     onError={(e) => {
-                      // Optionally handle image load error here
+                      (e.target as HTMLImageElement).src = "/media/svg/files/blank-image.svg";
                     }}
                   />
                 ) : (
@@ -2917,7 +3279,7 @@ const ProductDetailPage: React.FC = () => {
 
       {/* Related Products Section - Separate Card */}
       {relatedProducts.length > 0 && (
-        <Container className="mt-4">
+        <Container className="mt-2 mt-md-4 px-2 px-md-3">
           <div className="related-products">
             <h3>Related Products</h3>
             
@@ -2937,11 +3299,10 @@ const ProductDetailPage: React.FC = () => {
                     <div className="related-product-card">
                       <div className="related-product-image">
                         <img
-                          src={Utils.img(relatedProduct.feature_photo)}
+                          src={getImageUrl(relatedProduct.feature_photo)}
                           alt={relatedProduct.name}
                           onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = Utils.img('default.png');
+                            (e.target as HTMLImageElement).src = "/media/svg/files/blank-image.svg";
                           }}
                         />
                       </div>
@@ -2956,12 +3317,12 @@ const ProductDetailPage: React.FC = () => {
                         
                         <div className="related-product-price">
                           <span className="related-product-price-current">
-                            UGX {relatedProduct.price_2 || relatedProduct.price_1}
+                            UGX {parseFloat(relatedProduct.price_2 || relatedProduct.price_1).toLocaleString()}
                           </span>
                           {relatedProduct.price_2 && parseFloat(relatedProduct.price_2) < parseFloat(relatedProduct.price_1) && (
                             <>
                               <span className="related-product-price-original">
-                                UGX {relatedProduct.price_1}
+                                UGX {parseFloat(relatedProduct.price_1).toLocaleString()}
                               </span>
                               <span className="related-product-discount">
                                 -{Math.round(((parseFloat(relatedProduct.price_1) - parseFloat(relatedProduct.price_2)) / parseFloat(relatedProduct.price_1)) * 100)}%
@@ -2973,24 +3334,12 @@ const ProductDetailPage: React.FC = () => {
                         <div className="related-product-actions">
                           <button
                             className="related-product-btn related-product-btn-primary"
-                            onClick={async () => {
-                              try {
-                                const success = await addToCartHook(relatedProduct, 1);
-                                if (success) {
-                                  dispatch(showNotification({
-                                    message: `${relatedProduct.name} added to cart!`,
-                                    type: 'success'
-                                  }));
-                                }
-                              } catch (error) {
-                                dispatch(showNotification({
-                                  message: 'Failed to add item to cart',
-                                  type: 'error'
-                                }));
-                              }
+                            onClick={() => {
+                              // Navigate to the product page to see contact options
+                              navigate(`/product/${relatedProduct.id}`);
                             }}
                           >
-                            + Cart
+                            Contact
                           </button>
                           <Link
                             to={`/product/${relatedProduct.id}`}
@@ -3020,37 +3369,118 @@ const ProductDetailPage: React.FC = () => {
 
       {/* Mobile Sticky Bottom Bar */}
       <div className="mobile-sticky-bottom">
-        <div className="mobile-action-buttons">
+        <div className="mobile-contact-actions">
           <Button
-            className="mobile-btn-add-to-cart"
-            onClick={onAddToCart}
-            disabled={outOfStock}
+            className="mobile-btn-call"
+            onClick={() => {
+              if (product.url && product.url.length > 5) {
+                window.open(`tel:${product.url}`, '_self');
+              } else {
+                alert('No phone number available for this seller');
+              }
+            }}
           >
-            <i className="bi bi-cart-plus"></i>
-            Add to Cart
+            <i className="bi bi-telephone"></i>
+            Call
           </Button>
           <Button
-            className="mobile-btn-buy-now"
-            onClick={onBuyNow}
-            disabled={outOfStock}
+            className="mobile-btn-whatsapp"
+            onClick={() => {
+              const message = `Hi! I'm interested in this product: ${product.name} - ${window.location.href}`;
+              const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+              window.open(whatsappUrl, '_blank');
+            }}
           >
-            <i className="bi bi-lightning"></i>
-            Buy Now
+            <i className="bi bi-whatsapp"></i>
+            WhatsApp
+          </Button>
+          <Button
+            className="mobile-btn-chat"
+            disabled={chatLoading}
+            onClick={async () => {
+              console.log('Mobile Chat button clicked!');
+              console.log('Authentication state:', { isAuthenticated, currentUser });
+              
+              setChatLoading(true);
+              try {
+                // Check if user is authenticated
+                if (!isAuthenticated || !currentUser) {
+                  console.log('User not authenticated, redirecting to login');
+                  dispatch(showNotification({
+                    type: 'error',
+                    message: 'Please login to start a chat'
+                  }));
+                  navigate('/auth/login');
+                  return;
+                }
+
+                // Get current user ID from Redux state
+                const currentUserId = currentUser.id?.toString();
+                if (!currentUserId) {
+                  dispatch(showNotification({
+                    type: 'error',
+                    message: 'User ID not found. Please login again.'
+                  }));
+                  navigate('/auth/login');
+                  return;
+                }
+
+                // Check if trying to chat with own product
+                if (product.user?.toString() === currentUserId) {
+                  dispatch(showNotification({
+                    type: 'error',
+                    message: 'You cannot chat with yourself'
+                  }));
+                  return;
+                }
+
+                // Start chat
+                const response = await chatService.startChat({
+                  sender_id: currentUserId,
+                  receiver_id: product.user?.toString() || '',
+                  product_id: product.id?.toString() || ''
+                });
+
+                if (response.code === 1) {
+                  // Navigate to chat conversation
+                  navigate(`/account/chat/${response.data.id}`, {
+                    state: {
+                      chatHead: response.data,
+                      receiverId: product.user?.toString(),
+                      senderId: currentUserId,
+                    }
+                  });
+                } else {
+                  dispatch(showNotification({
+                    type: 'error',
+                    message: response.message || 'Failed to start chat'
+                  }));
+                }
+              } catch (error) {
+                console.error('Error starting chat:', error);
+                dispatch(showNotification({
+                  type: 'error',
+                  message: 'Failed to start chat. Please try again.'
+                }));
+              } finally {
+                setChatLoading(false);
+              }
+            }}
+          >
+            {chatLoading ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                <span className="ms-1">Starting...</span>
+              </>
+            ) : (
+              <>
+                <i className="bi bi-chat-dots"></i>
+                Chat
+              </>
+            )}
           </Button>
         </div>
       </div>
-
-      {/* Review Form Modal */}
-      <ReviewForm
-        productId={product.id}
-        show={showReviewModal}
-        onHide={() => setShowReviewModal(false)}
-        asModal={true}
-        onReviewSubmitted={() => {
-          // The ReviewList will automatically refetch due to cache invalidation
-          // Don't close modal here - let ReviewForm handle it after successful submission
-        }}
-      />
     </>
   );
 };
