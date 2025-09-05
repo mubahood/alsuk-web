@@ -105,10 +105,23 @@ export class CategoryModel {
   static async fetchCategories(): Promise<CategoryModel[]> {
     try {
       const response = await http_get("/categories");
-      if (!Array.isArray(response)) {
-        throw new Error("Invalid response format for categories.");
+      
+      // The backend returns: { code: 1, status: 1, message: "", data: [...] }
+      if (response && response.data && Array.isArray(response.data)) {
+        return response.data.map((item: any) => CategoryModel.fromJson(item));
       }
-      return response.map((item: any) => CategoryModel.fromJson(item));
+      
+      // Fallback: Check if response is direct array (unlikely based on backend)
+      if (Array.isArray(response)) {
+        return response.map((item: any) => CategoryModel.fromJson(item));
+      }
+      
+      // Handle API error response format
+      if (response && response.code === 0) {
+        throw new Error(response.message || "API request failed");
+      }
+      
+      throw new Error("Invalid response format for categories.");
     } catch (error) {
       throw error;
     }

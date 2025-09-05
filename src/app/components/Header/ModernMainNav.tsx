@@ -50,7 +50,7 @@ const ModernMainNav: React.FC = () => {
   const handleMobileSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (mobileSearchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(mobileSearchQuery.trim())}`);
+      navigate(`/?search=${encodeURIComponent(mobileSearchQuery.trim())}`);
       setMobileSearchQuery('');
     }
   };
@@ -114,19 +114,14 @@ const ModernMainNav: React.FC = () => {
               {/* Logo */}
               <Link to="/" className="mobile-logo-wrapper">
                 <img
-                  src="/media/logos/logo.png"
-                  alt="Blitxpress"
+                  src="/media/logos/alsuk-logo.png"
+                  alt="AL-SUK"
                   className="mobile-logo"
                 />
               </Link>
 
               {/* Action Icons */}
               <div className="mobile-action-icons">
-                <Link to="/products" className="mobile-action-link">
-                  <div className="mobile-action-icon-wrapper">
-                    <i className="bi bi-shop"></i>
-                  </div>
-                </Link>
                 {isAuthenticated ? (
                   <Link to="/account" className="mobile-action-link">
                     <div className="mobile-action-icon-wrapper">
@@ -141,12 +136,9 @@ const ModernMainNav: React.FC = () => {
                     </div>
                   </Link>
                 )}
-                <Link to="/cart" className="mobile-action-link">
+                <Link to="/product/create" className="mobile-action-link">
                   <div className="mobile-action-icon-wrapper">
-                    <i className="bi bi-bag"></i>
-                    {cartCount > 0 && (
-                      <span className="mobile-cart-badge">{cartCount}</span>
-                    )}
+                    <i className="bi bi-plus-circle"></i>
                   </div>
                 </Link>
               </div>
@@ -194,8 +186,8 @@ const ModernMainNav: React.FC = () => {
           {/* Desktop Logo */}
           <Link to="/" className="logo-wrapper me-4">
             <img
-              src="/media/logos/logo.png"
-              alt="Blitxpress"
+              src="/media/logos/alsuk-logo.png"
+              alt="AL-SUK"
               className="main-logo"
             />
           </Link>
@@ -234,7 +226,7 @@ const ModernMainNav: React.FC = () => {
                               mainCategory.subcategories.map((subCategory) => (
                                 <Link 
                                   key={subCategory.id}
-                                  to={`/products?category=${subCategory.id}`} 
+                                  to={`/?category=${subCategory.id}`} 
                                   className="mega-menu-link"
                                   onClick={() => setMegaMenuOpen(false)}
                                 >
@@ -269,11 +261,11 @@ const ModernMainNav: React.FC = () => {
                       <div className="featured-category-card">
                         <div className="featured-content">
                           <div className="featured-icon">
-                            <i className="bi bi-lightning-charge"></i>
+                            <i className="bi bi-shield-check"></i>
                           </div>
                           <div className="featured-text">
-                            <h6>Flash Sales</h6>
-                            <p>Up to 70% off selected items</p>
+                            <h6>Authentic Products</h6>
+                            <p>100% genuine electronics & gadgets</p>
                           </div>
                         </div>
                       </div>
@@ -282,11 +274,11 @@ const ModernMainNav: React.FC = () => {
                       <div className="featured-category-card">
                         <div className="featured-content">
                           <div className="featured-icon featured-icon-secondary">
-                            <i className="bi bi-truck"></i>
+                            <i className="bi bi-people"></i>
                           </div>
                           <div className="featured-text">
-                            <h6>Free Delivery</h6>
-                            <p>Fast delivery to your location</p>
+                            <h6>Trusted Sellers</h6>
+                            <p>Connect with verified local vendors</p>
                           </div>
                         </div>
                       </div>
@@ -307,13 +299,6 @@ const ModernMainNav: React.FC = () => {
 
           {/* Enhanced Action Icons */}
           <div className="action-icons">
-            <Link to="/products" className="action-link">
-              <div className="action-icon-wrapper">
-                <i className="bi bi-shop action-icon"></i>
-              </div>
-              <div className="action-text">Shop</div>
-            </Link>
-            
             {isAuthenticated ? (
               <>
                 <Link to="/account" className="action-link">
@@ -352,14 +337,11 @@ const ModernMainNav: React.FC = () => {
               </>
             )}
             
-            <Link to="/cart" className="action-link">
+            <Link to="/product/create" className="action-link">
               <div className="action-icon-wrapper">
-                <i className="bi bi-bag action-icon"></i>
-                {cartCount > 0 && (
-                  <span className="cart-badge">{cartCount}</span>
-                )}
+                <i className="bi bi-plus-circle action-icon"></i>
               </div>
-              <div className="action-text">Cart</div>
+              <div className="action-text">Post Product</div>
             </Link>
           </div>
         </nav>
@@ -373,7 +355,7 @@ const ModernMainNav: React.FC = () => {
       <div className={`mobile-nav-offcanvas ${isMenuOpen ? "show" : ""}`}>
         <div className="offcanvas-header">
           <div className="offcanvas-logo">
-            <img src="/media/logos/logo.png" alt="Blitxpress" className="mobile-offcanvas-logo" />
+            <img src="/media/logos/alsuk-logo.png" alt="AL-SUK" className="mobile-offcanvas-logo" />
           </div>
           <button 
             className="offcanvas-close-btn"
@@ -389,41 +371,23 @@ const ModernMainNav: React.FC = () => {
           <div className="mobile-nav-section">
             <h6 className="mobile-nav-heading">Categories</h6>
             <ul className="nav-links">
-              <li>
-                <a href="/category/electronics">
-                  <i className="bi bi-cpu"></i>
-                  <span>Electronics</span>
-                  <i className="bi bi-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/category/fashion">
-                  <i className="bi bi-bag-heart"></i>
-                  <span>Fashion</span>
-                  <i className="bi bi-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/category/home-garden">
-                  <i className="bi bi-house-door"></i>
-                  <span>Home & Garden</span>
-                  <i className="bi bi-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/category/sports">
-                  <i className="bi bi-trophy"></i>
-                  <span>Sports & Outdoors</span>
-                  <i className="bi bi-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="/category/books">
-                  <i className="bi bi-book"></i>
-                  <span>Books & Media</span>
-                  <i className="bi bi-chevron-right"></i>
-                </a>
-              </li>
+              {megaMenuCategories.slice(0, 6).map((category) => (
+                <li key={category.id}>
+                  <Link to={`/?category=${category.id}`} onClick={toggleMenu}>
+                    <i className={`${category.icon || 'bi-grid-3x3-gap'}`}></i>
+                    <span>{category.category}</span>
+                    <i className="bi bi-chevron-right"></i>
+                  </Link>
+                </li>
+              ))}
+              {megaMenuCategories.length === 0 && (
+                <li>
+                  <div className="nav-link text-muted">
+                    <i className="bi bi-info-circle"></i>
+                    <span>Loading categories...</span>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -498,9 +462,9 @@ const ModernMainNav: React.FC = () => {
             <h6 className="mobile-nav-heading">Quick Links</h6>
             <ul className="nav-links">
               <li>
-                <Link to="/products" onClick={toggleMenu}>
-                  <i className="bi bi-shop text-primary"></i>
-                  <span>Shop All Products</span>
+                <Link to="/product/create" onClick={toggleMenu}>
+                  <i className="bi bi-plus-circle text-success"></i>
+                  <span>Post Product</span>
                 </Link>
               </li>
               <li>

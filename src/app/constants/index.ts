@@ -12,8 +12,8 @@ export * from '../../Constants';
 // ===================================================================
 
 export const API_CONFIG = {
-  BASE_URL: "https://blit.blitxpress.com",
-  API_URL: "https://blit.blitxpress.com/api",
+  BASE_URL: "https://api.alsuk.ug",
+  API_URL: "https://api.alsuk.ug/api",
   TIMEOUT: 5000,
   MAX_RETRIES: 3,
 } as const;
@@ -23,7 +23,7 @@ export const API_CONFIG = {
 // ===================================================================
 
 export const APP_CONFIG = {
-  NAME: "BlitXpress",
+  NAME: "AL-SUK",
   CURRENCY: "UGX",
   DATE_FORMAT: "YYYY-MM-DD",
   LOGO: "https://skills-ug-api.8technologies.net/storage/images/8tech.png",
@@ -158,9 +158,9 @@ export const SUCCESS_MESSAGES = {
 // ===================================================================
 
 export const COMPANY_INFO = {
-  NAME: "BlitXpress",
+  NAME: "AL-SUK",
   TAGLINE: "Your trusted marketplace for quality products",
-  DESCRIPTION: "BlitXpress is Uganda's leading e-commerce platform connecting buyers and sellers across the country.",
+  DESCRIPTION: "AL-SUK is Uganda's leading e-commerce platform connecting buyers and sellers across the country.",
   EMAIL: "blitelofficial@gmail.com",
   PHONE: "0800200146",
   WHATSAPP: "+256 790 742428",
@@ -183,8 +183,8 @@ export const SOCIAL_MEDIA = {
 // ===================================================================
 
 export const APP_LINKS = {
-  IOS: "https://apps.apple.com/in/app/blitxpress/id6742859129",
-  ANDROID: "https://play.google.com/store/apps/details?id=com.eurosatgroup.blitxpress&pli=1",
+  IOS: "https://apps.apple.com/in/app/alsuk/id6742859129",
+  ANDROID: "https://play.google.com/store/apps/details?id=com.eurosatgroup.alsuk&pli=1",
 } as const;
 
 // ===================================================================
@@ -194,7 +194,7 @@ export const APP_LINKS = {
 export const STATIC_CONTENT = {
   BUYER_PROTECTION: {
     TITLE: "Buyer Protection",
-    SUBTITLE: "Shop with confidence on BlitXpress",
+    SUBTITLE: "Shop with confidence on AL-SUK",
     FEATURES: [
       {
         icon: "bi-shield-check",

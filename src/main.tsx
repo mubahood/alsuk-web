@@ -71,7 +71,8 @@ if (!container) throw new Error("Failed to find the root element");
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  // Temporarily disabled StrictMode to prevent double API calls during development
+  // <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter
@@ -86,5 +87,5 @@ root.render(
         {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
       </QueryClientProvider>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

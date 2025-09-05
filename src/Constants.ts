@@ -1,18 +1,18 @@
 // export const BASE_URL = "https://skills-ug-api.8technologies.net";
-// export const BASE_URL = "https://blit.blitxpress.com";
-export const BASE_URL = "http://localhost:8888/blitxpress";
+// export const BASE_URL = "https://api.alsuk.ug";
+export const BASE_URL = "http://localhost:8888/alsuk-backend";
 export const API_URL = BASE_URL + "/api";
 export const TIMEOUT = 8000;
 export const MAX_RETRIES = 3;
 export const DATE_FORMAT = "YYYY-MM-DD";
-export const CURRENCY = "UGX"; 
+export const CURRENCY = "UGX";
 export const LOCAL_MANIFEST = "LOCAL_MANIFEST";
 export const CART_ITEMS = "CART_ITEMS";
 export const LOCAL_DISTRICTS = "LOCAL_DISTRICTS";
-export const APP_NAME = "BlitXpress";
+export const APP_NAME = "AL-SUK";
 export const LOCAL_JOBSEEKER_MANIFEST = "LOCAL_JOBSEEKER_MANIFEST";
 export const LOGO =
-  "https://skills-ug-api.8technologies.net/storage/images/8tech.png";
+  "https://alsuk.8technologies.net/storage/images/alsuk-logo.png";
 
 export const EMPLOYMENT_STATUS_OPTIONS = [
   { value: "Full Time", label: "Full Time" },

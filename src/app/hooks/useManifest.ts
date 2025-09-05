@@ -55,6 +55,12 @@ export const useManifest = () => {
  */
 export const useManifestCategories = () => {
   const manifest = useSelector((state: RootState) => selectManifest(state));
+  
+  // Add debugging
+  console.log('🔍 Manifest in useManifestCategories:', manifest);
+  console.log('🔍 Categories from manifest:', manifest?.categories);
+  console.log('🔍 Categories length:', manifest?.categories?.length || 0);
+  
   return manifest?.categories || [];
 };
 
@@ -251,91 +257,51 @@ export const useMegaMenuCategories = () => {
   const manifest = useSelector((state: RootState) => selectManifest(state));
   const categories = manifest?.categories || [];
   
-  console.log('=== CATEGORY ANALYSIS START ===');
+  console.log('=== MEGA MENU CATEGORIES START ===');
   console.log('Total categories from manifest:', categories.length);
   
-  // Show sample of category structure and all unique values for key fields
-  if (categories.length > 0) {
-    const uniqueIsParentValues = [...new Set(categories.map(cat => cat.is_parent))];
-    const uniqueShowInCategoriesValues = [...new Set(categories.map(cat => cat.show_in_categories))];
-    
-    console.log('Unique is_parent values:', uniqueIsParentValues);
-    console.log('Unique show_in_categories values:', uniqueShowInCategoriesValues);
-    console.log('Sample category structures:', categories.slice(0, 5).map(cat => ({
-      id: cat.id,
-      category: cat.category,
-      is_parent: cat.is_parent,
-      parent_id: cat.parent_id,
-      show_in_categories: cat.show_in_categories
-    })));
-  }
+  // Based on API response analysis, most categories are subcategories with parent_id=1
+  // Let's group them and create a simplified structure for the mega menu
+  const visibleCategories = categories
+    .filter(cat => 
+      cat.show_in_categories === 'Yes' && 
+      cat.is_parent === 'No' && 
+      cat.category !== 'MAIN CATEGORY'
+    )
+    .slice(0, 12); // Limit for mega menu
   
-  // Step 1: For now, let's use ALL categories to test parent-child relationship
-  // Later we can add back the show_in_categories filter once we confirm this works
-  console.log('Using ALL categories for testing...');
+  console.log('Visible categories for mega menu:', visibleCategories.length);
   
-  // Step 2: Get main categories (parents) - is_parent='Yes'
-  // Try different possible values for is_parent
-  const mainCategories = categories
-    .filter(cat => {
-      const isParent = cat.is_parent === 'Yes' || cat.is_parent === 'YES' || cat.is_parent === 'yes' || cat.is_parent === '1';
-      console.log(`Category "${cat.category}": is_parent="${cat.is_parent}" -> isParent=${isParent}`);
-      return isParent;
-    })
-    .slice(0, 3); // Limit to 3 main categories for mega menu
+  // Group into 3 main sections for mega menu layout
+  const groupSize = Math.ceil(visibleCategories.length / 3);
+  const megaMenuSections = [
+    {
+      id: 'section-1',
+      category: 'Electronics',
+      icon: 'bi-cpu',
+      subcategories: visibleCategories.slice(0, groupSize)
+    },
+    {
+      id: 'section-2', 
+      category: 'Technology',
+      icon: 'bi-gear',
+      subcategories: visibleCategories.slice(groupSize, groupSize * 2)
+    },
+    {
+      id: 'section-3',
+      category: 'Multimedia',
+      icon: 'bi-camera',
+      subcategories: visibleCategories.slice(groupSize * 2)
+    }
+  ].filter(section => section.subcategories.length > 0);
   
-  console.log('Main categories found:', mainCategories.map(cat => ({
-    id: cat.id,
-    name: cat.category,
-    is_parent: cat.is_parent,
-    parent_id: cat.parent_id
+  console.log('Mega menu sections:', megaMenuSections.map(s => ({
+    name: s.category,
+    subcategories: s.subcategories.length
   })));
+  console.log('=== MEGA MENU CATEGORIES END ===\n');
   
-  // Step 3: For each main category, find its subcategories
-  const categoriesWithSubs = mainCategories.map(parent => {
-    console.log(`\n--- Looking for subcategories of "${parent.category}" (ID: ${parent.id}) ---`);
-    
-    // Find subcategories: is_parent='No' AND parent_id=this_category_id
-    const subcategories = categories
-      .filter(cat => {
-        // Check if it's a subcategory (is_parent = 'No')
-        const isSubcategory = cat.is_parent === 'No' || cat.is_parent === 'NO' || cat.is_parent === 'no' || cat.is_parent === '0';
-        
-        // Check if it belongs to this parent (handle string/number mismatch)
-        const belongsToThisParent = 
-          cat.parent_id === parent.id ||
-          Number(cat.parent_id) === Number(parent.id) ||
-          String(cat.parent_id) === String(parent.id);
-        
-        console.log(`  Checking "${cat.category}": is_parent="${cat.is_parent}" (isSubcategory=${isSubcategory}), parent_id="${cat.parent_id}" vs parent.id="${parent.id}" (belongsToThisParent=${belongsToThisParent})`);
-        
-        if (isSubcategory && belongsToThisParent) {
-          console.log(`    ✅ MATCH: ${cat.category} belongs to ${parent.category}`);
-        }
-        
-        return isSubcategory && belongsToThisParent;
-      })
-      .slice(0, 6); // Limit to 6 subcategories per parent
-    
-    console.log(`${parent.category} final subcategories (${subcategories.length}):`, 
-      subcategories.map(sub => sub.category)
-    );
-    
-    return {
-      ...parent,
-      subcategories
-    };
-  });
-  
-  console.log('\n=== FINAL MEGA MENU STRUCTURE ===');
-  categoriesWithSubs.forEach(cat => {
-    console.log(`${cat.category} (${cat.subcategories.length} subs):`, 
-      cat.subcategories.map(sub => `  - ${sub.category}`)
-    );
-  });
-  console.log('=== CATEGORY ANALYSIS END ===\n');
-  
-  return categoriesWithSubs;
+  return megaMenuSections;
 };
 
 export default useManifest;

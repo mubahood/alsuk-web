@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
                 <li><Link to="/account/orders" className="footer-link">Order History</Link></li>
                 <li><Link to="/account/wishlist" className="footer-link">Wishlist</Link></li>
                 <li><Link to="/register" className="footer-link">Create Account</Link></li>
-                <li><Link to="/sell" className="footer-link">Sell on BlitXpress</Link></li>
+                <li><Link to="/sell" className="footer-link">Sell on AL-SUK</Link></li>
                 <li><Link to="/mobile-apps" className="footer-link">Mobile Apps</Link></li>
               </ul>
             </div>

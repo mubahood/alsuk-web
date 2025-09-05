@@ -44,19 +44,19 @@ const MobileApps: React.FC = () => {
 
   return (
     <StaticPageLayout
-      title="BlitXpress Mobile Apps"
+      title="AL-SUK Mobile Apps"
       subtitle="Shop anywhere, anytime with our mobile apps for iOS and Android"
       breadcrumbs={breadcrumbs}
     >
       <div>
         <h2>Download Our Mobile Apps</h2>
         <p>
-          Experience the full power of BlitXpress on your mobile device. Our apps are designed to provide 
+          Experience the full power of AL-SUK on your mobile device. Our apps are designed to provide 
           you with a seamless shopping experience, whether you're at home, at work, or on the go.
         </p>
 
         <div className="static-app-download">
-          <h3 className="static-app-title">Get the BlitXpress App</h3>
+          <h3 className="static-app-title">Get the AL-SUK App</h3>
           <p className="static-app-description">
             Available for free on both iOS and Android devices. Download now and start shopping!
           </p>
@@ -147,7 +147,7 @@ const MobileApps: React.FC = () => {
               <p className="static-contact-label">WhatsApp Support</p>
               <p className="static-contact-value">
                 <a 
-                  href={`https://wa.me/${COMPANY_INFO.WHATSAPP.replace(/\D/g, '')}?text=Hi, I need help with the BlitXpress mobile app`}
+                  href={`https://wa.me/${COMPANY_INFO.WHATSAPP.replace(/\D/g, '')}?text=Hi, I need help with the AL-SUK mobile app`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -195,7 +195,7 @@ const MobileApps: React.FC = () => {
         <div className="static-app-download">
           <h3 className="static-app-title">Ready to Get Started?</h3>
           <p className="static-app-description">
-            Join millions of satisfied customers who shop with BlitXpress mobile apps every day.
+            Join millions of satisfied customers who shop with AL-SUK mobile apps every day.
           </p>
           <div className="static-app-buttons">
             <a 

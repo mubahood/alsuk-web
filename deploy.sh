@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# BlitXpress React App - Production Deployment Script
+# AL-SUK React App - Production Deployment Script
 # This script helps you deploy your React application to production
 
-echo "🚀 BlitXpress Production Deployment"
+echo "🚀 AL-SUK Production Deployment"
 echo "================================="
 
 # Check if dist folder exists
@@ -20,7 +20,7 @@ du -sh dist
 
 echo ""
 echo "📋 Pre-deployment checklist:"
-echo "- [ ] API endpoints configured for production (https://blit.blitxpress.com)"
+echo "- [ ] API endpoints configured for production (https://api.alsuk.ug)"
 echo "- [ ] HTTPS certificate installed on server"
 echo "- [ ] Server configured for SPA routing"
 echo "- [ ] CORS headers configured on backend"

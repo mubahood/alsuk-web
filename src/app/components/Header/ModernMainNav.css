@@ -45,7 +45,9 @@
 }
 
 .main-logo {
-  height: 32px; /* Reduced from 36px to match smaller nav */
+  height: 42px; /* Increased from 32px for better visibility */
+  max-width: 160px; /* Ensure logo doesn't get too wide */
+  object-fit: contain; /* Maintain aspect ratio */
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
   transition: all 0.3s ease;
 }
@@ -590,12 +592,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 25px 15px 25px;
-  border-bottom: 2px solid var(--border-color);
-  background: linear-gradient(135deg, var(--background-light), var(--white));
+  border-bottom: 1px solid var(--border-color);
+  background: var(--white);
 }
 
-.mobile-logo {
-  height: 32px;
+.mobile-offcanvas-logo {
+  height: 36px;
+  max-width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.1));
 }
 
 .offcanvas-close-btn {
@@ -754,8 +759,8 @@
 
 /* Mobile Navigation Top Row */
 .mobile-nav-top {
-  background: linear-gradient(135deg, var(--white) 0%, #fafbfc 100%);
-  border-bottom: 1px solid rgba(226, 232, 234, 0.3);
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .mobile-top-row {
@@ -797,6 +802,18 @@
   display: flex;
   justify-content: center;
   padding: 0 20px;
+}
+
+.mobile-logo {
+  height: 36px; /* Good mobile size */
+  max-width: 140px; /* Prevent logo from getting too wide */
+  object-fit: contain; /* Maintain aspect ratio */
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.1));
+  transition: all 0.3s ease;
+}
+
+.mobile-logo:hover {
+  transform: scale(1.02);
 }
 
 .mobile-logo {

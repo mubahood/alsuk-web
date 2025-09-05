@@ -519,7 +519,7 @@ const LiveSearchBox: React.FC<LiveSearchBoxProps> = ({
     if (onSearchSubmit) {
       onSearchSubmit(searchQuery);
     } else {
-      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      navigate(`/?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 

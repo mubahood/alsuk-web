@@ -1,26 +1,26 @@
-// src/app/pages/static/SellOnBlitXpress.tsx
+// src/app/pages/static/SellOnAlSuk.tsx
 import React from 'react';
 import StaticPageLayout from '../../components/Layout/StaticPageLayout';
 import { COMPANY_INFO, STATIC_CONTENT } from '../../constants';
 
-const SellOnBlitXpress: React.FC = () => {
+const SellOnAlSuk: React.FC = () => {
   const breadcrumbs = [
     { label: 'Home', path: '/' },
-    { label: 'Sell on BlitXpress' }
+    { label: 'Sell on AL-SUK' }
   ];
 
   return (
     <StaticPageLayout
-      title="Sell on BlitXpress"
-      subtitle="Join thousands of vendors and grow your business with Uganda's leading e-commerce platform"
+      title="Sell on AL-SUK"
+      subtitle="Join thousands of vendors and grow your business with Uganda's leading marketplace platform"
       breadcrumbs={breadcrumbs}
     >
       <div>
-        <h2>Why Choose BlitXpress?</h2>
+        <h2>Why Choose AL-SUK?</h2>
         <p>
-          BlitXpress is Uganda's premier e-commerce platform, connecting sellers with customers across the country. 
+          AL-SUK is Uganda's premier marketplace platform, connecting sellers with customers across the country. 
           Whether you're a small business owner, entrepreneur, or established retailer, we provide the tools and 
-          support you need to succeed online.
+          support you need to succeed in Uganda's digital marketplace.
         </p>
 
         <h2>Benefits of Selling with Us</h2>
@@ -42,7 +42,7 @@ const SellOnBlitXpress: React.FC = () => {
         </ul>
 
         <h2>How to Get Started</h2>
-        <p>Ready to start selling on BlitXpress? Follow these simple steps:</p>
+        <p>Ready to start selling on AL-SUK? Follow these simple steps:</p>
         <ol>
           <li><strong>Contact Our Team:</strong> Reach out to us using the contact information below</li>
           <li><strong>Submit Documentation:</strong> Provide your business registration and product information</li>
@@ -90,18 +90,18 @@ const SellOnBlitXpress: React.FC = () => {
         <div className="static-app-download">
           <h3 className="static-app-title">Ready to Start?</h3>
           <p className="static-app-description">
-            Contact us today to begin your journey as a BlitXpress vendor. Our team is here to help you succeed.
+            Contact us today to begin your journey as an AL-SUK vendor. Our team is here to help you succeed.
           </p>
           <div className="static-app-buttons">
             <a 
-              href={`mailto:${COMPANY_INFO.EMAIL}?subject=Vendor Application - BlitXpress`}
+              href={`mailto:${COMPANY_INFO.EMAIL}?subject=Vendor Application - AL-SUK`}
               className="static-app-button"
             >
               <i className="bi bi-envelope"></i>
               Send Email
             </a>
             <a 
-              href={`https://wa.me/${COMPANY_INFO.WHATSAPP.replace(/\D/g, '')}?text=Hi, I'm interested in becoming a vendor on BlitXpress`}
+              href={`https://wa.me/${COMPANY_INFO.WHATSAPP.replace(/\D/g, '')}?text=Hi, I'm interested in becoming a vendor on AL-SUK`}
               className="static-app-button"
               target="_blank"
               rel="noopener noreferrer"
@@ -116,4 +116,4 @@ const SellOnBlitXpress: React.FC = () => {
   );
 };
 
-export default SellOnBlitXpress;
+export default SellOnAlSuk;

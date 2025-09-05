@@ -10,6 +10,8 @@ import ToastService from "./ToastService";
  * Comprehensive API service that handles all backend endpoints
  */
 export class ApiService {
+  private static categoriesCache: CategoryModel[] | null = null;
+  private static categoriesPromise: Promise<CategoryModel[]> | null = null;
   
   // ===== PRODUCTS =====
   
@@ -91,9 +93,35 @@ export class ApiService {
   // ===== CATEGORIES =====
   
   /**
-   * Get all categories
+   * Get all categories with caching to prevent duplicate requests
    */
   static async getCategories(): Promise<CategoryModel[]> {
+    // Return cached result if available
+    if (this.categoriesCache) {
+      return this.categoriesCache;
+    }
+    
+    // Return existing promise if already in progress
+    if (this.categoriesPromise) {
+      return this.categoriesPromise;
+    }
+    
+    // Start new request
+    this.categoriesPromise = this.fetchCategoriesInternal();
+    
+    try {
+      const categories = await this.categoriesPromise;
+      this.categoriesCache = categories; // Cache the result
+      return categories;
+    } catch (error) {
+      this.categoriesPromise = null; // Reset promise on error
+      throw error;
+    } finally {
+      this.categoriesPromise = null; // Reset promise when done
+    }
+  }
+  
+  private static async fetchCategoriesInternal(): Promise<CategoryModel[]> {
     try {
       return await CategoryModel.fetchCategories();
     } catch (error) {
@@ -429,8 +457,74 @@ export class ApiService {
         throw new Error("No manifest data received");
       }
 
-      // The backend now returns the correctly structured manifest
-      return response.data;
+      // Transform the API response structure to match frontend expectations
+      const manifestData = response.data;
+      
+      return {
+        categories: manifestData.CATEGORIES || [],
+        first_banner: manifestData.FIRST_BANNER || null,
+        section_1_products: manifestData.SECTION_1_PRODUCTS || {},
+        section_2_products: manifestData.SECTION_2_PRODUCTS || {},
+        slider_categories: manifestData.SLIDER_CATEGORIES || [],
+        top_4_products: manifestData.TOP_4_PRODUCTS || {},
+        // Add default values for other expected properties
+        app_info: {
+          name: "AL-SUK",
+          version: "1.0.0",
+          api_version: "1.0.0",
+          maintenance_mode: false
+        },
+        delivery_locations: [],
+        settings: {
+          currency: "IQD",
+          currency_symbol: "د.ع",
+          tax_rate: 0,
+          delivery_fee_varies: false,
+          min_order_amount: 0
+        },
+        features: {
+          wishlist_enabled: true,
+          reviews_enabled: true,
+          chat_enabled: true,
+          promotions_enabled: true
+        },
+        counts: {
+          total_products: 0,
+          total_categories: manifestData.CATEGORIES?.length || 0,
+          total_orders: 0,
+          total_users: 0,
+          total_vendors: 0,
+          active_vendors: 0,
+          total_delivery_locations: 0,
+          active_promotions: 0,
+          wishlist_count: 0,
+          cart_count: 0,
+          notifications_count: 0,
+          unread_messages_count: 0,
+          pending_orders: 0,
+          completed_orders: 0,
+          cancelled_orders: 0,
+          processing_orders: 0,
+          recent_orders_this_week: 0,
+          orders_today: 0,
+          orders_this_month: 0,
+          new_users_this_week: 0,
+          new_users_today: 0,
+          products_out_of_stock: 0,
+          low_stock_products: 0,
+          featured_products_count: 0,
+          total_revenue: 0,
+          revenue_this_month: 0,
+          average_order_value: 0
+        },
+        user: null,
+        is_authenticated: false,
+        featured_products: [],
+        recent_products: [],
+        recent_orders: [],
+        recent_search_suggestions: [],
+        wishlist: []
+      };
     } catch (error: any) {
       console.error("Failed to load manifest:", error);
       throw error;
@@ -449,14 +543,18 @@ export class ApiService {
     search_term: string;
   }> {
     try {
-      const response = await http_get(`live-search?q=${encodeURIComponent(query)}&limit=${limit}`);
+      // Use the products endpoint with search parameter
+      const response = await http_get(`products?search=${encodeURIComponent(query)}&limit=${limit}`);
       const data = response?.data || {};
       
+      // Extract products from the paginated response
+      const products = (data.data || []).map((item: any) => ProductModel.fromJson(item));
+      
       return {
-        products: (data.products || []).map((item: any) => ProductModel.fromJson(item)),
-        suggestions: data.suggestions || [],
+        products,
+        suggestions: [], // No suggestions from this endpoint, but products serve as suggestions
         total: data.total || 0,
-        search_term: data.search_term || query
+        search_term: query
       };
     } catch (error) {
       console.warn("Live search failed:", error);
@@ -501,10 +599,10 @@ export class ApiService {
    * Get or create a session ID for guest users
    */
   private static getOrCreateSessionId(): string {
-    let sessionId = localStorage.getItem('blitxpress_session_id');
+    let sessionId = localStorage.getItem('alsuk_session_id');
     if (!sessionId) {
       sessionId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('blitxpress_session_id', sessionId);
+      localStorage.setItem('alsuk_session_id', sessionId);
     }
     return sessionId;
   }
