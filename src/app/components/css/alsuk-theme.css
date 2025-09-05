@@ -1302,6 +1302,11 @@ body:has(.account-layout-wrapper) {
   transform: translateX(4px);
 }
 
+.acc-nav-link:hover .acc-nav-icon,
+.acc-nav-link:hover .acc-nav-text {
+  color: var(--white) !important;
+}
+
 .acc-nav-link:hover::before,
 .acc-nav-link.active::before {
   transform: scaleY(1);

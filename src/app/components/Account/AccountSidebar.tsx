@@ -29,6 +29,12 @@ const AccountSidebar: React.FC = () => {
       path: '/account',
     },
     {
+      id: 'my-products',
+      label: 'My Products',
+      icon: 'bi-box-seam',
+      path: '/account/my-products',
+    },
+    {
       id: 'chat',
       label: 'Messages',
       icon: 'bi-chat-dots',
