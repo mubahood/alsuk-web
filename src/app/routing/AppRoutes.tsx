@@ -69,6 +69,10 @@ const AccountWishlist = React.lazy(() => import("../pages/account/AccountWishlis
 const OrderDetailsPage = React.lazy(() => import("../pages/account/OrderDetailsPage"));
 const Account = React.lazy(() => import("../pages/account/Account"));
 
+// Product Management Pages
+const MyProducts = React.lazy(() => import("../pages/account/MyProducts"));
+const ProductCreate = React.lazy(() => import("../pages/account/ProductCreate"));
+
 // Error Pages
 const NotFoundPage = React.lazy(() => import("../pages/errors/NotFoundPage"));
 
@@ -160,6 +164,8 @@ const AppRoutes: React.FC = () => {
             <Route path="profile" element={<AccountProfile />} />
             <Route path="wishlist" element={<AccountWishlist />} />
             <Route path="settings" element={<AccountSettings />} />
+            <Route path="my-products" element={<MyProducts />} />
+            <Route path="my-products/create" element={<ProductCreate />} />
             <Route path="chat" element={<ChatListPage />} />
             <Route path="chat/:chatHeadId" element={<ChatConversationPage />} />
           </Route>
