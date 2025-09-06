@@ -1,4 +1,4 @@
-export const BASE_URL = "http://app.alsukssd.com";
+export const BASE_URL = "https://app.alsukssd.com";
 // export const BASE_URL = "http://localhost:8888/alsuk-backend";
 export const API_URL = BASE_URL + "/api";
 export const TIMEOUT = 8000;
