@@ -136,7 +136,7 @@ const ModernMainNav: React.FC = () => {
                     </div>
                   </Link>
                 )}
-                <Link to="/account/my-products/create" className="mobile-action-link">
+                <Link to="/account/my-shop/create" className="mobile-action-link">
                   <div className="mobile-action-icon-wrapper">
                     <i className="bi bi-plus-circle"></i>
                   </div>
@@ -343,7 +343,7 @@ const ModernMainNav: React.FC = () => {
               </>
             )}
             
-            <Link to="/account/my-products/create" className="action-link">
+            <Link to="/account/my-shop/create" className="action-link">
               <div className="action-icon-wrapper">
                 <i className="bi bi-plus-circle action-icon"></i>
               </div>
@@ -480,7 +480,7 @@ const ModernMainNav: React.FC = () => {
             <h6 className="mobile-nav-heading">Quick Links</h6>
             <ul className="nav-links">
               <li>
-                <Link to="/account/my-products/create" onClick={toggleMenu}>
+                <Link to="/account/my-shop/create" onClick={toggleMenu}>
                   <i className="bi bi-plus-circle text-success"></i>
                   <span>Post Product</span>
                 </Link>

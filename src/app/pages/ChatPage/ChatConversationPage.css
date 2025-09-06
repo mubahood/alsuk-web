@@ -3,15 +3,10 @@
 .chat-conversation-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   max-height: 100vh;
   background: #f0f2f5;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 /* Simple Header */
@@ -68,6 +63,8 @@
   overflow-y: auto;
   padding: 8px 16px;
   background: #f0f2f5;
+  height: 0; /* Forces flex item to respect flex: 1 */
+  max-height: calc(100vh - 200px); /* Reserve space for header and input */
 }
 
 .chat-messages-list {
@@ -156,6 +153,10 @@
   padding: 12px 16px;
   background: white;
   border-top: 1px solid #e4e6ea;
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  flex-shrink: 0;
 }
 
 .chat-input-wrapper {
@@ -252,7 +253,13 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .chat-conversation-page {
-    height: calc(100vh - 60px);
+    height: 100vh;
+    max-height: 100vh;
+  }
+  
+  .chat-messages-area {
+    max-height: calc(100vh - 180px);
+    padding: 6px 12px;
   }
   
   .chat-header {
@@ -282,6 +289,11 @@
   
   .chat-input-area {
     padding: 8px 12px;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #e4e6ea;
+    z-index: 100;
   }
   
   .chat-input {
@@ -300,10 +312,16 @@
   
   .chat-messages-area {
     padding: 6px 10px;
+    max-height: calc(100vh - 160px);
   }
   
   .chat-input-area {
     padding: 6px 10px;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #e4e6ea;
+    z-index: 100;
   }
 }
 

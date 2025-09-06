@@ -71,6 +71,7 @@ const Account = React.lazy(() => import("../pages/account/Account"));
 
 // Product Management Pages
 const MyProducts = React.lazy(() => import("../pages/account/MyProducts"));
+const MyShop = React.lazy(() => import("../pages/account/MyShop"));
 const ProductCreate = React.lazy(() => import("../pages/account/ProductCreate"));
 
 // Error Pages
@@ -164,8 +165,9 @@ const AppRoutes: React.FC = () => {
             <Route path="profile" element={<AccountProfile />} />
             <Route path="wishlist" element={<AccountWishlist />} />
             <Route path="settings" element={<AccountSettings />} />
-            <Route path="my-products" element={<MyProducts />} />
-            <Route path="my-products/create" element={<ProductCreate />} />
+            <Route path="my-shop" element={<MyShop />} />
+            <Route path="my-shop/create" element={<ProductCreate />} />
+            <Route path="my-shop/:id/edit" element={<ProductCreate />} />
             <Route path="chat" element={<ChatListPage />} />
             <Route path="chat/:chatHeadId" element={<ChatConversationPage />} />
           </Route>

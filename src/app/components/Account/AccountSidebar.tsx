@@ -14,11 +14,26 @@ interface MenuItem {
   path: string;
 }
 
-const AccountSidebar: React.FC = () => {
+interface AccountSidebarProps {
+  isCollapsed?: boolean;
+  onToggle?: () => void;
+}
+
+const AccountSidebar: React.FC<AccountSidebarProps> = ({ 
+  isCollapsed = false, 
+  onToggle 
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+
+  // Handle navigation click - close sidebar on mobile
+  const handleNavClick = () => {
+    if (window.innerWidth <= 768 && onToggle) {
+      onToggle();
+    }
+  };
 
   // Essential menu items for marketplace users
   const menuItems: MenuItem[] = [
@@ -29,10 +44,10 @@ const AccountSidebar: React.FC = () => {
       path: '/account',
     },
     {
-      id: 'my-products',
-      label: 'My Products',
-      icon: 'bi-box-seam',
-      path: '/account/my-products',
+      id: 'my-shop',
+      label: 'My Shop',
+      icon: 'bi-shop',
+      path: '/account/my-shop',
     },
     {
       id: 'chat',
@@ -68,6 +83,7 @@ const AccountSidebar: React.FC = () => {
   };
 
   const handleLogout = () => {
+    handleNavClick(); // Close sidebar on mobile
     dispatch(logout());
     ToastService.logoutSuccess();
     navigate('/');
@@ -100,6 +116,7 @@ const AccountSidebar: React.FC = () => {
                 as={Link}
                 to={item.path}
                 className={`acc-nav-link ${isActive(item.path) ? 'active' : ''}`}
+                onClick={handleNavClick}
               >
                 <i className={`${item.icon} acc-nav-icon`}></i>
                 <span className="acc-nav-text">{item.label}</span>
