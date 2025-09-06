@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { loadManifest, updateCartCount } from '../../store/slices/manifestSlice';
 import { selectIsAuthenticated } from '../../store/slices/authSlice';
-import { useCart } from '../../hooks/useCart';
 
 /**
  * Component that initializes and manages the application manifest
@@ -13,7 +12,6 @@ import { useCart } from '../../hooks/useCart';
 const ManifestInitializer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const { cartCount } = useCart();
   
   // Load manifest when component mounts
   useEffect(() => {
@@ -29,11 +27,6 @@ const ManifestInitializer: React.FC = () => {
 
     return () => clearTimeout(timer);
   }, [isAuthenticated, dispatch]);
-
-  // Update cart count in manifest when cart changes
-  useEffect(() => {
-    dispatch(updateCartCount(cartCount));
-  }, [cartCount, dispatch]);
 
   // This component doesn't render anything
   return null;

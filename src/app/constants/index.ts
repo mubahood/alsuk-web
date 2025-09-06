@@ -12,8 +12,8 @@ export * from '../../Constants';
 // ===================================================================
 
 export const API_CONFIG = {
-  BASE_URL: "https://api.alsuk.ug",
-  API_URL: "https://api.alsuk.ug/api",
+  BASE_URL: "http://alsukssd.com",
+  API_URL: "http://alsukssd.com/api",
   TIMEOUT: 5000,
   MAX_RETRIES: 3,
 } as const;
@@ -159,12 +159,12 @@ export const SUCCESS_MESSAGES = {
 
 export const COMPANY_INFO = {
   NAME: "AL-SUK",
-  TAGLINE: "Your trusted marketplace for quality products",
-  DESCRIPTION: "AL-SUK is Uganda's leading e-commerce platform connecting buyers and sellers across the country.",
-  EMAIL: "blitelofficial@gmail.com",
-  PHONE: "0800200146",
-  WHATSAPP: "+256 790 742428",
-  ADDRESS: "Kampala, Uganda",
+  TAGLINE: "Your trusted marketplace for South Sudan",
+  DESCRIPTION: "AL-SUK is South Sudan's premier buy and sell marketplace platform connecting buyers and sellers across the country.",
+  EMAIL: "alsudssd@gmail.com",
+  PHONE: "+256780245409",
+  WHATSAPP: "+256780245409",
+  ADDRESS: "Juba, South Sudan",
 } as const;
 
 // ===================================================================
@@ -172,10 +172,10 @@ export const COMPANY_INFO = {
 // ===================================================================
 
 export const SOCIAL_MEDIA = {
-  TWITTER: "https://x.com/blit_xpress",
-  FACEBOOK: "https://www.facebook.com/people/Blit-Xpress/61575579878607/",
-  INSTAGRAM: "https://www.instagram.com/blit_xpress/",
-  TIKTOK: "https://www.tiktok.com/@blit_xpress",
+  TWITTER: "https://twitter.com/alsukssd",
+  FACEBOOK: "https://www.facebook.com/alsukssd",
+  INSTAGRAM: "https://www.instagram.com/alsukssd/",
+  TIKTOK: "https://www.tiktok.com/@alsukssd",
 } as const;
 
 // ===================================================================
@@ -183,8 +183,8 @@ export const SOCIAL_MEDIA = {
 // ===================================================================
 
 export const APP_LINKS = {
-  IOS: "https://apps.apple.com/in/app/alsuk/id6742859129",
-  ANDROID: "https://play.google.com/store/apps/details?id=com.eurosatgroup.alsuk&pli=1",
+  IOS: "https://apps.apple.com/app/alsuk/id6742859129",
+  ANDROID: "https://play.google.com/store/apps/details?id=alsukssd.com&hl=en&pli=1",
 } as const;
 
 // ===================================================================
@@ -204,7 +204,7 @@ export const STATIC_CONTENT = {
       {
         icon: "bi-truck",
         title: "Safe Delivery",
-        description: "Track your orders and get guaranteed delivery to your doorstep"
+        description: "Track your orders and get guaranteed delivery across South Sudan"
       },
       {
         icon: "bi-arrow-return-left",
@@ -219,7 +219,7 @@ export const STATIC_CONTENT = {
     ]
   },
   VENDOR_BENEFITS: [
-    "Reach thousands of customers across Uganda",
+    "Reach thousands of customers across South Sudan",
     "Easy product listing and management",
     "Secure payment processing",
     "Marketing and promotional support",

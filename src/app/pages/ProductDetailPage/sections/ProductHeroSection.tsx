@@ -19,8 +19,8 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGetProductByIdQuery } from '../../../services/productsApi';
-import { addToCart } from '../../../store/slices/cartSlice';
 import { showNotification } from '../../../store/slices/notificationSlice';
+import ToastService from '../../../services/ToastService';
 
 const ProductHeroSection: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
@@ -84,9 +84,7 @@ const ProductHeroSection: React.FC = () => {
   };
   const addToCartHandler = () => {
     if (outOfStock) return dispatch(showNotification({ message: 'Out of stock', type: 'error' }));
-    dispatch(addToCart({ product: p, quantity: qty, variant: variants }));
-    dispatch(showNotification({ message: `${qty}× ${p.name} added`, type: 'success' }));
-    setQty(1);
+    dispatch(showNotification({ message: 'Cart functionality removed. Contact seller directly.', type: 'info' }));
   };
   const buyNow = () => {
     if (outOfStock) return dispatch(showNotification({ message: 'Out of stock', type: 'error' }));

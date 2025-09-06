@@ -25,9 +25,13 @@ const MainNav: React.FC = () => {
 
           <Link to="/" className="mx-auto ms-lg-0">
             <img
-              src="/media/logos/logo.png"
+              src="/media/logos/alsuk-logo.png"
               alt="AL-SUK"
               className="main-logo"
+              onError={(e) => {
+                // Fallback to other AL-SUK logo if primary doesn't exist
+                e.currentTarget.src = '/media/logos/alsuk-logo-2.png';
+              }}
             />
           </Link>
 

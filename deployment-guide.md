@@ -17,7 +17,7 @@ Your React application has been successfully built for production and is ready f
   - Tree shaking for unused code elimination
 
 ### Key Features
-✅ **Production API URL**: `https://api.alsuk.ug/api`
+✅ **Production API URL**: `http://alsukssd.com/api`
 ✅ **Optimized Performance**: Code splitting, lazy loading, chunked bundles
 ✅ **SEO Ready**: Proper meta tags and structured HTML
 ✅ **Mobile Responsive**: Bootstrap-based responsive design
@@ -84,7 +84,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ### Recommended Headers
 ```
-Content-Security-Policy: default-src 'self' https://api.alsuk.ug
+Content-Security-Policy: default-src 'self' http://alsukssd.com
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
@@ -110,7 +110,7 @@ Before deploying to production, test these features:
 - [ ] **User authentication** login/register
 - [ ] **Search functionality** works properly
 - [ ] **Mobile responsiveness** on different devices
-- [ ] **API connectivity** to `https://api.alsuk.ug/api`
+- [ ] **API connectivity** to `http://alsukssd.com/api`
 - [ ] **Performance**: Page load times under 3 seconds
 - [ ] **SEO**: Meta tags and structured data present
 
@@ -119,7 +119,7 @@ Before deploying to production, test these features:
 Once deployed, your application will be accessible at:
 - **Main Site**: `https://yourdomain.com/`
 - **Products**: `https://yourdomain.com/products`
-- **API Endpoint**: `https://api.alsuk.ug/api`
+- **API Endpoint**: `http://alsukssd.com/api`
 
 ## 📊 Performance Metrics
 
@@ -170,7 +170,7 @@ rsync -avz dist/ user@yourserver:/var/www/html/
 - The build is optimized for production with minification and compression
 - All console logs and debug statements are removed
 - Source maps are not included for security
-- The application uses the production API at `https://api.alsuk.ug`
+- The application uses the production API at `http://alsukssd.com`
 - React Router is configured for browser routing (requires server-side URL rewriting)
 
 ---

@@ -17,14 +17,12 @@ const HomePage = React.lazy(() => import("../pages/HomePage"));
 const ProductDetailPage = React.lazy(() => import("../pages/ProductDetailPage/ProductDetailPage"));
 const ProductsPage = React.lazy(() => import("../pages/ProductsPage"));
 const CategoryPage = React.lazy(() => import("../pages/CategoryPage"));
-const CartPage = React.lazy(() => import("../pages/CartPage"));
 const CheckoutPage = React.lazy(() => import("../pages/CheckoutPage"));
 const DeliveryAddressPage = React.lazy(() => import("../pages/DeliveryAddressPage"));
 const OrderSuccessPage = React.lazy(() => import("../pages/OrderSuccessPage"));
 const PaymentPage = React.lazy(() => import("../pages/PaymentPage"));
 const PaymentCallbackPage = React.lazy(() => import("../pages/PaymentCallbackPage"));
 const SearchResultsPage = React.lazy(() => import("../pages/SearchResultsPage"));
-const WishlistPage = React.lazy(() => import("../pages/WishlistPage"));
 const AboutPage = React.lazy(() => import("../pages/AboutPage"));
 const ContactPage = React.lazy(() => import("../pages/ContactPage"));
 const FAQPage = React.lazy(() => import("../pages/FAQPage"));
@@ -65,7 +63,6 @@ const AccountDashboard = React.lazy(() => import("../pages/account/AccountDashbo
 const AccountProfile = React.lazy(() => import("../pages/account/AccountProfile"));
 const AccountOrdersPage = React.lazy(() => import("../pages/account/AccountOrdersPage"));
 const AccountSettings = React.lazy(() => import("../pages/account/AccountSettings"));
-const AccountWishlist = React.lazy(() => import("../pages/account/AccountWishlist"));
 const OrderDetailsPage = React.lazy(() => import("../pages/account/OrderDetailsPage"));
 const Account = React.lazy(() => import("../pages/account/Account"));
 
@@ -99,8 +96,7 @@ const AppRoutes: React.FC = () => {
           <Route path="category/:categoryId" element={<CategoryPage />} />
           <Route path="search" element={<SearchResultsPage />} />
           
-          {/* Cart & Checkout */}
-          <Route path="cart" element={<CartPage />} />
+          {/* Checkout */}
           <Route 
             path="delivery-address" 
             element={
@@ -142,15 +138,7 @@ const AppRoutes: React.FC = () => {
             } 
           />
           
-          {/* User Features */}
-          <Route 
-            path="wishlist" 
-            element={
-              <ProtectedRoute>
-                <WishlistPage />
-              </ProtectedRoute>
-            } 
-          />
+          {/* User Features - removed wishlist */}
           
           {/* Account - Protected Routes with Dedicated Layout (no footer) */}
           <Route 
@@ -163,7 +151,6 @@ const AppRoutes: React.FC = () => {
           >
             <Route index element={<AccountDashboard />} />
             <Route path="profile" element={<AccountProfile />} />
-            <Route path="wishlist" element={<AccountWishlist />} />
             <Route path="settings" element={<AccountSettings />} />
             <Route path="my-shop" element={<MyShop />} />
             <Route path="my-shop/create" element={<ProductCreate />} />

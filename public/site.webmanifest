@@ -1,0 +1,22 @@
+{
+  "name": "AL-SUK - South Sudan'sPremier Marketplace",
+  "short_name": "AL-SUK",
+  "description": "Join thousands of Ugandans buying and selling on AL-SUK. From electronics to fashion, find everything you need or sell what you have.",
+  "icons": [
+    {
+      "src": "/media/logos/alsuk-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/media/logos/alsuk-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#F75E1E",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
+}

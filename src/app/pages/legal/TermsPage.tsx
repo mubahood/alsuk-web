@@ -118,7 +118,7 @@ const TermsPage: React.FC = () => {
               <ul className="list-unstyled">
                 <li><strong>Email:</strong> legal@alsuk.ug</li>
                 <li><strong>Phone:</strong> +256 783 204 665</li>
-                <li><strong>Address:</strong> Bwera, Kasese, Uganda</li>
+                <li><strong>Address:</strong> Juba, South Sudan</li>
               </ul>
             </section>
           </div>

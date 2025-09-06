@@ -14,8 +14,8 @@ const Footer: React.FC = () => {
             <div className="footer-column">
               <h3 className="footer-title text-accent">{APP_NAME}</h3>
               <p className="footer-description">
-                Uganda's leading e-commerce platform connecting buyers and sellers nationwide. 
-                Shop with confidence and convenience.
+                South Sudan's premier buy and sell marketplace platform connecting buyers and sellers nationwide. 
+                Trade with confidence and convenience.
               </p>
               <div className="footer-contact">
                 <div className="contact-item">
@@ -54,10 +54,10 @@ const Footer: React.FC = () => {
               <ul className="footer-links">
                 <li><Link to="/account" className="footer-link">My Account</Link></li>
                 <li><Link to="/account/orders" className="footer-link">Order History</Link></li>
-                <li><Link to="/account/wishlist" className="footer-link">Wishlist</Link></li>
                 <li><Link to="/register" className="footer-link">Create Account</Link></li>
-                <li><Link to="/sell" className="footer-link">Sell on AL-SUK</Link></li>
+                <li><Link to="/account/my-shop" className="footer-link">Sell on AL-SUK</Link></li>
                 <li><Link to="/mobile-apps" className="footer-link">Mobile Apps</Link></li>
+                <li><Link to="/account/chat" className="footer-link">Messages</Link></li>
               </ul>
             </div>
 

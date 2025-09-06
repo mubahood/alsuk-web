@@ -206,7 +206,7 @@ const AppRoutes: React.FC = () => {
 export default AppRoutes;
 
 // export const BASE_URL = "https://skills-ug-api.8technologies.net";
-export const BASE_URL = "https://api.alsuk.ug";
+export const BASE_URL = "http://alsukssd.com";
 // export const BASE_URL = "http://localhost:8888/blitxpress";
 export const API_URL = BASE_URL + "/api";
 export const TIMEOUT = 8000;

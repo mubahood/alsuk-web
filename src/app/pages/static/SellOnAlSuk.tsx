@@ -12,15 +12,15 @@ const SellOnAlSuk: React.FC = () => {
   return (
     <StaticPageLayout
       title="Sell on AL-SUK"
-      subtitle="Join thousands of vendors and grow your business with Uganda's leading marketplace platform"
+      subtitle="Join thousands of vendors and grow your business with South Sudan's leading marketplace platform"
       breadcrumbs={breadcrumbs}
     >
       <div>
         <h2>Why Choose AL-SUK?</h2>
-        <p>
-          AL-SUK is Uganda's premier marketplace platform, connecting sellers with customers across the country. 
-          Whether you're a small business owner, entrepreneur, or established retailer, we provide the tools and 
-          support you need to succeed in Uganda's digital marketplace.
+                <p>
+          AL-SUK is South Sudan's premier marketplace platform, connecting sellers with customers across the country. 
+          Whether you're a local artisan, established retailer, or growing business, we provide all the tools and 
+          support you need to succeed in South Sudan's digital marketplace.
         </p>
 
         <h2>Benefits of Selling with Us</h2>

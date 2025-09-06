@@ -54,13 +54,7 @@ const AccountSidebar: React.FC<AccountSidebarProps> = ({
       label: 'Messages',
       icon: 'bi-chat-dots',
       path: '/account/chat',
-    },
-    {
-      id: 'wishlist',
-      label: 'Wishlist',
-      icon: 'bi-heart',
-      path: '/account/wishlist',
-    },
+    }, 
     {
       id: 'profile',
       label: 'Profile',

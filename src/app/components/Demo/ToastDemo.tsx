@@ -18,8 +18,6 @@ const ToastDemo: React.FC = () => {
     {
       title: "E-commerce Actions",
       actions: [
-        { label: "Add to Cart", action: () => ToastService.addToCart("Wireless Headphones") },
-        { label: "Remove from Cart", action: () => ToastService.removeFromCart("Laptop Stand") },
         { label: "Add to Wishlist", action: () => ToastService.addToWishlist("Smart Watch") },
         { label: "Remove from Wishlist", action: () => ToastService.removeFromWishlist("Phone Case") },
       ]

@@ -7,7 +7,7 @@ import ProductCard from "../components/shared/ProductCard";
 import ToastService from "../services/ToastService";
 import { ProductModel } from "../models/ProductModel";
 import CategoryModel from "../models/CategoryModel";
-import { ApiService } from "../services/ApiService";
+import ApiService from "../services/ApiService";
 import HeroSection from "../components/HomePage/HeroSection";
 
 // Optimized styles for professional boxed UI with minimal spacing
@@ -30,51 +30,46 @@ const homePageStyles = `
     margin: 0 auto;
     padding: 8px;
     display: flex;
-    gap: 12px;
+    gap: 8px;
   }
 
   .categories-sidebar {
-    width: 240px;
+    width: 280px;
     background: #ffffff;
     border: 1px solid #e9ecef;
     padding: 0;
     height: fit-content;
     position: sticky;
     top: 80px;
-    border-radius: 8px;
-    overflow: hidden;
   }
 
   .sidebar-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    background: #ffffff;
     border-bottom: 1px solid #e9ecef;
-    padding: 10px 14px;
+    padding: 12px 16px;
     color: #333333;
   }
 
   .sidebar-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #333333;
-    margin: 0 0 2px 0;
+    margin: 0 0 4px 0;
   }
 
   .categories-count-badge {
-    font-size: 10px;
-    background: #f1f3f4;
-    color: #5f6368;
-    padding: 1px 5px;
-    border-radius: 8px;
+    font-size: 11px;
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 2px 6px;
     display: inline-block;
     font-weight: 500;
   }
 
   .category-list {
     list-style: none;
-    padding: 4px;
+    padding: 6px;
     margin: 0;
-    max-height: 400px;
-    overflow-y: auto;
   }
 
   .category-item {
@@ -83,17 +78,17 @@ const homePageStyles = `
 
   .category-item.loading,
   .category-item.error {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .category-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 10px;
+    padding: 8px 12px;
     color: #4a5568;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     transition: all 0.2s ease;
     border: none;
@@ -101,7 +96,6 @@ const homePageStyles = `
     width: 100%;
     text-align: left;
     cursor: pointer;
-    border-radius: 4px;
   }
 
   .category-link:hover {
@@ -121,18 +115,17 @@ const homePageStyles = `
   }
 
   .category-count {
-    font-size: 10px;
-    background: rgba(108, 117, 125, 0.08);
-    padding: 1px 4px;
-    border-radius: 6px;
+    font-size: 11px;
+    background: rgba(108, 117, 125, 0.1);
+    padding: 2px 6px;
     color: #6c757d;
     font-weight: 600;
-    min-width: 16px;
+    min-width: 18px;
     text-align: center;
   }
 
   .category-link.active .category-count {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
   }
 
@@ -140,19 +133,18 @@ const homePageStyles = `
   .error-state {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 8px 12px;
     color: #6c757d;
-    font-size: 11px;
+    font-size: 12px;
     background: #f8f9fa;
-    border-radius: 4px;
   }
 
   .loading-spinner-small {
-    width: 10px;
-    height: 10px;
-    border: 1px solid #e9ecef;
-    border-top: 1px solid #F75E1E;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #e9ecef;
+    border-top: 2px solid #F75E1E;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -172,16 +164,14 @@ const homePageStyles = `
     flex: 1;
     background: #ffffff;
     border: 1px solid #e9ecef;
-    border-radius: 8px;
     padding: 0;
     min-width: 0;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   .products-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    padding: 18px 20px;
+    padding: 16px;
     border-bottom: 1px solid #e9ecef;
     display: flex;
     justify-content: space-between;
@@ -268,14 +258,14 @@ const homePageStyles = `
   .products-list {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 16px;
     padding-top: 0;
   }
 
   .product-list-item {
     display: flex;
-    gap: 16px;
-    padding: 16px 0;
+    gap: 12px;
+    padding: 12px 0;
     background: transparent;
     border: none;
     border-bottom: 1px solid #f0f0f0;
@@ -286,12 +276,10 @@ const homePageStyles = `
   }
 
   .product-list-item:hover {
-    background: linear-gradient(135deg, #fafafa 0%, #f8f9fa 100%);
+    background: #fafafa;
     border-bottom-color: #F75E1E;
     text-decoration: none;
     color: inherit;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .product-list-item:last-child {
@@ -299,22 +287,18 @@ const homePageStyles = `
   }
 
   .product-image-container {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
     flex-shrink: 0;
     background: #f8f9fa;
-    border-radius: 8px;
     overflow: hidden;
     position: relative;
-    border: 1px solid #e9ecef;
   }
 
   .product-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    background: #ffffff;
-    padding: 8px;
+    object-fit: cover;
   }
 
   .product-main-info {
@@ -326,7 +310,7 @@ const homePageStyles = `
   }
 
   .product-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: #1a1a1a;
     margin: 0;
@@ -340,12 +324,12 @@ const homePageStyles = `
   .product-price-section {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 6px 0;
+    gap: 6px;
+    margin: 3px 0;
   }
 
   .product-price {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: #114786;
     margin: 0;
@@ -761,8 +745,8 @@ const ProductListItem: React.FC<{ product: ProductModel }> = ({ product }) => {
         
         {/* Product Meta Information */}
         <div className="product-meta-info">
-          {product.category_text && (
-            <span className="product-category">{product.category_text}</span>
+          {product.category_name && (
+            <span className="product-category">{product.category_name}</span>
           )}
           <span className="product-date">{formatDate(product.created_at)}</span>
         </div>
@@ -774,8 +758,8 @@ const ProductListItem: React.FC<{ product: ProductModel }> = ({ product }) => {
           <i className="fas fa-heart"></i>
         </button>
         
-        <span className={`stock-status ${product.in_stock > 0 ? 'stock-in' : 'stock-out'}`}>
-          {product.in_stock > 0 ? 'In Stock' : 'Out of Stock'}
+        <span className={`stock-status ${product.stock > 0 ? 'stock-in' : 'stock-out'}`}>
+          {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
         </span>
       </div>
     </div>
@@ -789,12 +773,14 @@ const HomePage: React.FC = () => {
   // Parse URL params
   const searchParams = new URLSearchParams(location.search);
   const initialCategory = searchParams.get("category") || "";
+  const initialLocation = searchParams.get("location") || "";
   const initialQuery = searchParams.get("query") || "";
   const initialPage = parseInt(searchParams.get("page") || "1");
   const initialSort = searchParams.get("sort") || "created_at:desc";
 
   // State management
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [selectedLocation, setSelectedLocation] = useState<string>(initialLocation);
   const [searchQuery, setSearchQuery] = useState<string>(initialQuery);
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [sortBy, setSortBy] = useState<string>(initialSort);
@@ -812,11 +798,11 @@ const HomePage: React.FC = () => {
     refetch: refetchProducts
   } = useGetProductsQuery({
     page: currentPage,
-    limit: 20,
-    category: selectedCategory ? parseInt(selectedCategory) : undefined,
+    per_page: 20,
+    category: selectedCategory,
+    location: selectedLocation,
     search: searchQuery,
-    sort_by: sortBy.split(':')[0],
-    sort_order: sortBy.split(':')[1]
+    sort: sortBy
   });
 
   // Load categories on component mount
@@ -824,8 +810,13 @@ const HomePage: React.FC = () => {
     const loadCategories = async () => {
       try {
         setCategoriesLoading(true);
-        const categoriesData = await ApiService.getCategories();
-        setCategories(categoriesData);
+        const response = await ApiService.get("/manifest/categories");
+        if (response.data && Array.isArray(response.data.data)) {
+          setCategories(response.data.data);
+        } else {
+          console.warn("Categories data format unexpected:", response.data);
+          setCategories([]);
+        }
       } catch (error) {
         console.error("Error loading categories:", error);
         setCategoriesError("Failed to load categories");
@@ -843,6 +834,7 @@ const HomePage: React.FC = () => {
     const params = new URLSearchParams();
     
     if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedLocation) params.set("location", selectedLocation);
     if (searchQuery) params.set("query", searchQuery);
     if (currentPage > 1) params.set("page", currentPage.toString());
     if (sortBy !== "created_at:desc") params.set("sort", sortBy);
@@ -853,11 +845,16 @@ const HomePage: React.FC = () => {
     if (newPath !== location.pathname + location.search) {
       navigate(newPath, { replace: true });
     }
-  }, [selectedCategory, searchQuery, currentPage, sortBy, navigate, location.pathname, location.search]);
+  }, [selectedCategory, selectedLocation, searchQuery, currentPage, sortBy, navigate, location.pathname, location.search]);
 
   // Handle filter changes
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
+    setCurrentPage(1);
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLocation(e.target.value);
     setCurrentPage(1);
   };
 
@@ -959,8 +956,8 @@ const HomePage: React.FC = () => {
                   className={`category-link ${selectedCategory === category.id.toString() ? 'active' : ''}`}
                   onClick={() => handleCategoryChange(category.id.toString())}
                 >
-                  <span className="category-name">{category.category}</span>
-                  <span className="category-count">0</span>
+                  <span className="category-name">{category.name}</span>
+                  <span className="category-count">{category.products_count || 0}</span>
                 </button>
               </li>
             ))}
@@ -974,7 +971,7 @@ const HomePage: React.FC = () => {
             <div className="header-content">
               <h1 className="products-title">
                 {selectedCategory ? 
-                  categories.find(cat => cat.id.toString() === selectedCategory)?.category || "Category" 
+                  categories.find(cat => cat.id.toString() === selectedCategory)?.name || "Category" 
                   : "All Products"
                 }
               </h1>

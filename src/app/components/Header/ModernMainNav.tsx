@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { selectIsAuthenticated } from "../../store/slices/authSlice";
-import { loadWishlistFromAPI } from "../../store/slices/wishlistSlice";
-import { useCart } from "../../hooks/useCart";
 import { useAppCounts, useMegaMenuCategories } from "../../hooks/useManifest";
 import { useManifest } from "../../hooks/useManifest";
 import LiveSearchBox from "../search/LiveSearchBox";
@@ -15,11 +13,9 @@ const ModernMainNav: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   
   // Use manifest counts instead of individual state selectors
-  const { cartCount } = useCart();
   const appCounts = useAppCounts();
   const { reloadManifest } = useManifest();
   const megaMenuCategories = useMegaMenuCategories();
-  const wishlistCount = appCounts.wishlist_count;
   
   // Debug: Log mega menu categories
   useEffect(() => {
@@ -310,14 +306,11 @@ const ModernMainNav: React.FC = () => {
                     Account
                   </div>
                 </Link>
-                <Link to="account/wishlist" className="action-link">
+                <Link to="/account/my-shop" className="action-link">
                   <div className="action-icon-wrapper">
-                    <i className="bi bi-heart action-icon"></i>
-                    {wishlistCount > 0 && (
-                      <span className="cart-badge">{wishlistCount}</span>
-                    )}
+                    <i className="bi bi-shop action-icon"></i>
                   </div>
-                  <div className="action-text">Wishlist</div>
+                  <div className="action-text">My Shop</div>
                 </Link>
                 <Link to="/account/chat" className="action-link">
                   <div className="action-icon-wrapper">
@@ -418,12 +411,9 @@ const ModernMainNav: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/account/wishlist"  onClick={toggleMenu}>
-                    <i className="bi bi-heart"></i>
-                    <span>Wishlist</span>
-                    {wishlistCount > 0 && (
-                      <span className="mobile-cart-badge">{wishlistCount}</span>
-                    )}
+                  <Link to="/account/my-shop"  onClick={toggleMenu}>
+                    <i className="bi bi-shop"></i>
+                    <span>My Shop</span>
                   </Link>
                 </li>
                 <li>
@@ -454,15 +444,6 @@ const ModernMainNav: React.FC = () => {
                   <Link to="/auth/register" onClick={toggleMenu}>
                     <i className="bi bi-person-plus text-success"></i>
                     <span>Create Account</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/account/wishlist"  onClick={toggleMenu}>
-                    <i className="bi bi-heart"></i>
-                    <span>Wishlist</span>
-                    {wishlistCount > 0 && (
-                      <span className="mobile-cart-badge">{wishlistCount}</span>
-                    )}
                   </Link>
                 </li>
                 <li>

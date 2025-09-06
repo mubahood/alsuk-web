@@ -20,7 +20,7 @@ du -sh dist
 
 echo ""
 echo "📋 Pre-deployment checklist:"
-echo "- [ ] API endpoints configured for production (https://api.alsuk.ug)"
+echo "- [ ] API endpoints configured for production (http://alsukssd.com)"
 echo "- [ ] HTTPS certificate installed on server"
 echo "- [ ] Server configured for SPA routing"
 echo "- [ ] CORS headers configured on backend"

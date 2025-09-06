@@ -98,7 +98,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div className="contact-details">
                     <h5>Location</h5>
-                    <p>Kampala, Uganda</p>
+                    <p>Juba, South Sudan</p>
                     <small>Serving customers nationwide</small>
                   </div>
                 </div>

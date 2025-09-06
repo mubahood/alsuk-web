@@ -10,14 +10,6 @@ import {
   getProductUrl,
   getProductImage 
 } from "../../utils";
-import { 
-  addToWishlistAPI, 
-  removeFromWishlistAPI, 
-  selectIsInWishlist,
-  selectWishlistLoading,
-  loadWishlistFromAPI,
-  syncFromManifest
-} from "../../store/slices/wishlistSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import { selectManifest, selectIsAuthenticated } from "../../store/slices/manifestSlice";
 
@@ -49,13 +41,16 @@ const productCardStyles = `
     width: 100%;
     aspect-ratio: 1;
     overflow: hidden;
-    background: #f8f9fa;
+    background: #ffffff;
+    border-bottom: 1px solid #f0f0f0;
   }
 
   .product-card-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: #ffffff;
+    padding: 12px;
     transition: transform 0.4s ease;
   }
 
@@ -106,65 +101,6 @@ const productCardStyles = `
     z-index: 3;
     line-height: 1;
     box-shadow: 0 2px 8px rgba(247, 94, 30, 0.3);
-  }
-
-  .product-card-wishlist-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #6c757d;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 3;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .product-card-wishlist-btn:hover {
-    background: #F75E1E;
-    color: #ffffff;
-    transform: scale(1.1);
-  }
-
-  .product-card-wishlist-btn.active {
-    background: #F75E1E;
-    color: #ffffff;
-  }
-
-  .product-card-wishlist-btn.loading {
-    opacity: 0.7;
-    cursor: not-allowed;
-    animation: pulse 1.5s infinite;
-  }
-
-  .product-card-wishlist-btn.loading:hover {
-    transform: none;
-    background: rgba(255, 255, 255, 0.95);
-    color: #6c757d;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 1; }
-  }
-
-  @keyframes wishlistSuccess {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-    100% { transform: scale(1); }
-  }
-
-  .product-card-wishlist-btn.success-animation {
-    animation: wishlistSuccess 0.4s ease;
   }
 
   .product-card-info {
@@ -258,11 +194,6 @@ const productCardStyles = `
     .product-card-price-new {
       font-size: 15px;
     }
-    
-    .product-card-wishlist-btn {
-      width: 34px;
-      height: 34px;
-    }
   }
 
   @media (max-width: 575px) {
@@ -281,10 +212,6 @@ const productCardStyles = `
     .product-card-price-new {
       font-size: 14px;
     }
-    
-    .product-card-wishlist-btn {
-      width: 32px;
-      height: 32px;
       font-size: 14px;
     }
     
@@ -321,39 +248,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [isProcessingWishlist, setIsProcessingWishlist] = useState(false);
-  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   
-  // Enhanced Redux selectors that check both wishlist slice and manifest
-  const isInWishlist = useSelector((state: RootState) => {
-    const wishlistItems = state.wishlist.items;
-    const inWishlistSlice = wishlistItems.some(item => item.product_id === product.id);
-    
-    const manifestWishlist = state.manifest.data?.wishlist || [];
-    const inManifestWishlist = manifestWishlist.some((item: any) => 
-      item.product_id === product.id || item.id === product.id
-    );
-    
-    return inWishlistSlice || inManifestWishlist;
-  });
-  
-  const wishlistLoading = useSelector((state: RootState) => 
-    selectWishlistLoading(state)
-  );
   const manifestData = useSelector((state: RootState) => selectManifest(state));
   const isAuthenticated = useSelector((state: RootState) => selectIsAuthenticated(state));
 
-  // Load wishlist data if user is authenticated and wishlist isn't loaded
-  useEffect(() => {
-    if (isAuthenticated && manifestData) {
-      if (manifestData.wishlist && manifestData.wishlist.length > 0) {
-        dispatch(syncFromManifest(manifestData.wishlist));
-      } else if (!manifestData.wishlist) {
-        dispatch(loadWishlistFromAPI());
-      }
-    }
-  }, [dispatch, isAuthenticated, manifestData]);
-  
   // Calculate price and discount
   const discountPercent = calculateDiscountPercent(product.price_2, product.price_1);
   const price1 = parseFloat(product.price_1);
@@ -370,31 +268,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     e.currentTarget.src = "/media/svg/files/blank-image.svg";
     e.currentTarget.onerror = null;
     setIsImageLoaded(true);
-  };
-
-  const handleWishlistClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (isProcessingWishlist || wishlistLoading) return;
-    
-    setIsProcessingWishlist(true);
-    
-    try {
-      if (isInWishlist) {
-        await dispatch(removeFromWishlistAPI(product.id)).unwrap();
-      } else {
-        await dispatch(addToWishlistAPI(product.id)).unwrap();
-      }
-      
-      setShowSuccessAnimation(true);
-      setTimeout(() => setShowSuccessAnimation(false), 400);
-      
-    } catch (error) {
-      console.error('Wishlist operation failed:', error);
-    } finally {
-      setIsProcessingWishlist(false);
-    }
   };
 
   // Get the image URL
@@ -441,23 +314,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             -{discountPercent}%
           </div>
         )}
-        
-        <button
-          className={`product-card-wishlist-btn ${isInWishlist ? 'active' : ''} ${
-            isProcessingWishlist || wishlistLoading ? 'loading' : ''
-          } ${showSuccessAnimation ? 'success-animation' : ''}`}
-          onClick={handleWishlistClick}
-          disabled={isProcessingWishlist || wishlistLoading}
-          title={
-            isProcessingWishlist 
-              ? 'Processing...' 
-              : isInWishlist 
-                ? 'Remove from wishlist' 
-                : 'Add to wishlist'
-          }
-        >
-          {isProcessingWishlist || wishlistLoading ? '⟳' : isInWishlist ? '♥' : '♡'}
-        </button>
       </Link>
       
       <div className="product-card-info">

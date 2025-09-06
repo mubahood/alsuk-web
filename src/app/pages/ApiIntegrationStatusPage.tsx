@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Alert, Button, Badge, Table } from 'react-bootstrap';
 import { useGetProductsQuery, useGetCategoriesQuery, useGetVendorsQuery } from '../services/realProductsApi';
-import { CartService } from '../services/CartService';
 
 const ApiIntegrationStatusPage: React.FC = () => {
   const [testResults, setTestResults] = useState<Record<string, any>>({});
@@ -25,38 +24,6 @@ const ApiIntegrationStatusPage: React.FC = () => {
     isLoading: vendorsLoading, 
     error: vendorsError 
   } = useGetVendorsQuery();
-
-  const testCartIntegration = () => {
-    try {
-      // Test cart operations
-      CartService.clearCart();
-      CartService.addToCart(1, 2, { color: 'red' }, { name: 'Test Product', price: '100000' });
-      CartService.addToCart(2, 1, { size: 'large' }, { name: 'Another Product', price: '200000' });
-      
-      const items = CartService.getCartItems();
-      const count = CartService.getCartItemCount();
-      const total = CartService.getCartTotal();
-      
-      setTestResults({
-        ...testResults,
-        cart: {
-          success: true,
-          items: items.length,
-          totalItems: count,
-          totalValue: total,
-          data: items
-        }
-      });
-    } catch (error) {
-      setTestResults({
-        ...testResults,
-        cart: {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }
-      });
-    }
-  };
 
   const testManifestIntegration = async () => {
     try {
@@ -194,12 +161,6 @@ const ApiIntegrationStatusPage: React.FC = () => {
       component: 'ProductDetailPage'
     },
     {
-      name: 'Cart Management',
-      status: 'working',
-      description: 'localStorage-based cart with sync capability',
-      component: 'CartService, CartPage'
-    },
-    {
       name: 'Vendor Information',
       status: !vendorsLoading && !vendorsError ? 'working' : vendorsError ? 'error' : 'loading',
       description: 'Vendor profiles and product listings',
@@ -293,31 +254,6 @@ const ApiIntegrationStatusPage: React.FC = () => {
             </Card.Body>
           </Card>
         </Col>
-        
-        <Col md={6}>
-          <Card>
-            <Card.Header>
-              <h5>Cart Integration Test</h5>
-            </Card.Header>
-            <Card.Body>
-              <Button onClick={testCartIntegration} variant="primary" className="mb-3">
-                Test Cart Functions
-              </Button>
-              {testResults.cart && (
-                <div>
-                  <Badge bg={testResults.cart.success ? 'success' : 'danger'}>
-                    {testResults.cart.success ? 'Cart Working' : 'Cart Error'}
-                  </Badge>
-                  {testResults.cart.success && (
-                    <div className="mt-2">
-                      <small>Items: {testResults.cart.items} | Total: UGX {testResults.cart.totalValue.toLocaleString()}</small>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
       </Row>
 
       <Row>
@@ -369,7 +305,6 @@ const ApiIntegrationStatusPage: React.FC = () => {
                 <ul>
                   <li>✅ Replaced all dummy data with real API calls</li>
                   <li>✅ Implemented comprehensive error handling and loading states</li>
-                  <li>✅ Created robust cart management with localStorage</li>
                   <li>✅ Updated all navigation to use React Router Links</li>
                   <li>✅ Built production-ready ProductsPage with filtering and pagination</li>
                   <li>✅ Integrated real categories and vendor data</li>

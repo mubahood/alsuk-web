@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { showNotification } from "../../store/slices/notificationSlice";
 import { selectIsAuthenticated, selectUser } from "../../store/slices/authSlice";
 import ProductCard from "../../components/shared/ProductCard";
-import WishlistButton from "../../components/shared/WishlistButton";
 import DynamicBreadcrumb from "../../components/shared/DynamicBreadcrumb";
 import Utils from "../../services/Utils";
 import chatService from "../../services/chatService";
@@ -2809,13 +2808,6 @@ const ProductDetailPage: React.FC = () => {
                       <span className="category-badge">
                         {product.category_text || "Uncategorized"}
                       </span>
-
-                      <WishlistButton
-                        productId={product.id}
-                        productName={product.name}
-                        variant="icon"
-                        size="md"
-                      />
                     </div>
 
                     <h1 className="product-title">{product.name}</h1>

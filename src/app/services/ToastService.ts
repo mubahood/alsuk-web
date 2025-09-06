@@ -85,20 +85,6 @@ export class ToastService {
   }
 
   // E-commerce specific notifications
-  static addToCart(productName?: string) {
-    this.success(
-      productName ? `${productName} added to cart!` : "Product added to cart!",
-      { autoClose: 1500 } // Reduced from 3000ms to 1500ms
-    );
-  }
-
-  static removeFromCart(productName?: string) {
-    this.warning(
-      productName ? `${productName} removed from cart` : "Product removed from cart",
-      { autoClose: 1500 } // Reduced from 3000ms to 1500ms
-    );
-  }
-
   static addToWishlist(productName?: string) {
     this.info(
       productName ? `${productName} added to wishlist!` : "Product added to wishlist!",

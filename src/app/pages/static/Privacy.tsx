@@ -127,7 +127,7 @@ const Privacy: React.FC = () => {
         <div className="static-section">
           <h3>10. International Transfers</h3>
           <p>
-            Your information may be processed and stored in countries outside Uganda. We ensure appropriate
+            Your information may be processed and stored in countries outside South Sudan. We ensure appropriate
             safeguards are in place to protect your information during international transfers.
           </p>
         </div>

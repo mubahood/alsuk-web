@@ -8,14 +8,6 @@ import {
   getProductUrl,
   getProductImage 
 } from "../../utils";
-import { 
-  addToWishlistAPI, 
-  removeFromWishlistAPI, 
-  selectIsInWishlist,
-  selectWishlistLoading,
-  loadWishlistFromAPI,
-  syncFromManifest
-} from "../../store/slices/wishlistSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import { selectManifest, selectIsAuthenticated } from "../../store/slices/manifestSlice";
 
@@ -105,54 +97,6 @@ const productCard2Styles = `
     font-weight: 600;
     z-index: 3;
     line-height: 1;
-  }
-
-  .pc2-wishlist-button {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 28px;
-    height: 28px;
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: var(--text-color-medium);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 3;
-  }
-
-  .pc2-wishlist-button:hover {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border-color: var(--primary-color);
-  }
-
-  .pc2-wishlist-button.pc2-active {
-    background-color: var(--primary-color);
-    color: var(--white);
-    border-color: var(--primary-color);
-  }
-
-  .pc2-wishlist-button.pc2-loading {
-    opacity: 0.7;
-    cursor: not-allowed;
-    animation: pc2-pulse 1.5s infinite;
-  }
-
-  .pc2-wishlist-button.pc2-loading:hover {
-    background-color: var(--white);
-    color: var(--text-color-medium);
-    border-color: var(--border-color);
-  }
-
-  @keyframes pc2-pulse {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 1; }
   }
 
   .pc2-content-area {
@@ -266,12 +210,6 @@ const productCard2Styles = `
       font-size: 9px;
       padding: 2px 4px;
     }
-    
-    .pc2-wishlist-button {
-      width: 24px;
-      height: 24px;
-      font-size: 11px;
-    }
   }
 
   @media (max-width: 767.98px) {
@@ -311,14 +249,6 @@ const productCard2Styles = `
       font-size: 8px;
       padding: 1px 3px;
     }
-    
-    .pc2-wishlist-button {
-      top: 4px;
-      right: 4px;
-      width: 22px;
-      height: 22px;
-      font-size: 10px;
-    }
   }
 
   @media (max-width: 480px) {
@@ -349,24 +279,7 @@ const ProductCard2: React.FC<ProductCardProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [wishlistAnimation, setWishlistAnimation] = useState(false);
 
-  // Redux state - Enhanced selectors that check both wishlist slice and manifest
-  const isInWishlist = useSelector((state: RootState) => {
-    const wishlistItems = state.wishlist.items;
-    const inWishlistSlice = wishlistItems.some(item => item.product_id === product.id);
-    
-    const manifestWishlist = state.manifest.data?.wishlist || [];
-    const inManifestWishlist = manifestWishlist.some((item: any) => 
-      item.product_id === product.id || item.id === product.id
-    );
-    
-    return inWishlistSlice || inManifestWishlist;
-  });
-  
-  const wishlistLoading = useSelector((state: RootState) => 
-    selectWishlistLoading(state)
-  );
   const manifestData = useSelector((state: RootState) => selectManifest(state));
   const isAuthenticated = useSelector((state: RootState) => selectIsAuthenticated(state));
 
@@ -374,17 +287,6 @@ const ProductCard2: React.FC<ProductCardProps> = ({
   const discountPercent = calculateDiscountPercent(product.price_2, product.price_1);
   const price1 = parseFloat(product.price_1);
   const price2 = parseFloat(product.price_2);
-  
-  // Load wishlist data if user is authenticated and wishlist isn't loaded
-  useEffect(() => {
-    if (isAuthenticated && manifestData) {
-      if (manifestData.wishlist && manifestData.wishlist.length > 0) {
-        dispatch(syncFromManifest(manifestData.wishlist));
-      } else if (!manifestData.wishlist) {
-        dispatch(loadWishlistFromAPI());
-      }
-    }
-  }, [dispatch, isAuthenticated, manifestData]);
 
   // Handlers
   const handleImageLoad = () => setIsImageLoaded(true);
@@ -392,26 +294,6 @@ const ProductCard2: React.FC<ProductCardProps> = ({
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = "/media/svg/files/blank-image.svg";
     e.currentTarget.onerror = null;
-  };
-
-  const handleWishlistClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (wishlistLoading) return;
-
-    try {
-      if (isInWishlist) {
-        await dispatch(removeFromWishlistAPI(product.id)).unwrap();
-      } else {
-        await dispatch(addToWishlistAPI(product.id)).unwrap();
-        // Success animation
-        setWishlistAnimation(true);
-        setTimeout(() => setWishlistAnimation(false), 400);
-      }
-    } catch (error) {
-      console.error('Wishlist action failed:', error);
-    }
   };
 
   // Get the image URL - use ProductModel method if available
@@ -445,18 +327,6 @@ const ProductCard2: React.FC<ProductCardProps> = ({
                 -{discountPercent}%
               </div>
             )}
-
-            {/* Wishlist button */}
-            <button
-              className={`pc2-wishlist-button ${isInWishlist ? 'pc2-active' : ''} ${
-                wishlistLoading ? 'pc2-loading' : ''
-              } ${wishlistAnimation ? 'pc2-success-animation' : ''}`}
-              onClick={handleWishlistClick}
-              disabled={wishlistLoading}
-              title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-            >
-              <i className={`bi ${isInWishlist ? 'bi-heart-fill' : 'bi-heart'}`} />
-            </button>
           </div>
           
           <div className="pc2-content-area">

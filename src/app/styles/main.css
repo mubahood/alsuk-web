@@ -6,7 +6,6 @@
 
 /* 1. Theme Variables and Base Styles */
 @import "../components/css/alsuk-theme.css";
-@import "../components/css/wishlist-utilities.css";
 
 /* 2. Layout Components */
 @import "../components/Header/Header.css";

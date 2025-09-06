@@ -6,7 +6,7 @@ AL-SUK is a comprehensive marketplace platform that connects buyers and sellers 
 ## Brand Identity
 - **Primary Color**: #F75E1E (Vibrant Orange) - Representing energy, enthusiasm, and the spirit of Ugandan commerce
 - **Secondary Color**: #114786 (Deep Blue) - Conveying trust, reliability, and professionalism
-- **Platform Name**: AL-SUK (Arabic: "The Market") - Reflecting Uganda's diverse cultural heritage and the universal concept of marketplace
+- **Platform Name**: AL-SUK (Arabic: "The Market") - Reflecting South Sudan'sdiverse cultural heritage and the universal concept of marketplace
 
 ## Key Features
 - **Multi-vendor Marketplace**: Support for individual sellers and businesses
@@ -42,6 +42,6 @@ AL-SUK is a comprehensive marketplace platform that connects buyers and sellers 
 - Preview Production: `npm run preview`
 
 ## About AL-SUK
-AL-SUK aims to democratize commerce in Uganda by providing a platform where anyone can sell and buy products easily and safely. Whether you're a small business owner, an individual seller, or a customer looking for great deals, AL-SUK is your gateway to Uganda's digital marketplace.
+AL-SUK aims to democratize commerce in Uganda by providing a platform where anyone can sell and buy products easily and safely. Whether you're a small business owner, an individual seller, or a customer looking for great deals, AL-SUK is your gateway to South Sudan'sdigital marketplace.
 
 *Empowering Ugandan Commerce, One Transaction at a Time.*

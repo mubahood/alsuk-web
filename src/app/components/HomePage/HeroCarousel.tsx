@@ -5,15 +5,14 @@ import { Link } from "react-router-dom";
 import { useManifestCategories, useManifest } from "../../hooks/useManifest";
 import Utils from "../../utils/imageUtils";
 
-// Inline styles for HeroCarousel following the unified design system
+// Inline styles for HeroCarousel following professional boxed design
 const heroCarouselStyles = `
   .hero-carousel-wrapper {
     width: 100%;
-    height: 400px;
+    height: 450px;
     position: relative;
     background-color: var(--background-light);
     border: 1px solid var(--border-color-light);
-    border-radius: var(--border-radius);
     overflow: hidden;
   }
 
@@ -24,13 +23,11 @@ const heroCarouselStyles = `
 
   .carousel {
     height: 100%;
-    border-radius: var(--border-radius);
     overflow: hidden;
   }
 
   .carousel-inner {
     height: 100%;
-    border-radius: var(--border-radius);
   }
 
   .carousel-item {
@@ -44,7 +41,6 @@ const heroCarouselStyles = `
     align-items: center;
     justify-content: center;
     position: relative;
-    border-radius: var(--border-radius);
     overflow: hidden;
     transition: all 0.3s ease;
   }
@@ -71,7 +67,6 @@ const heroCarouselStyles = `
     background-color: var(--primary-color);
     color: var(--white);
     padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
     font-size: 0.9rem;
     font-weight: 600;
     display: inline-block;
@@ -111,7 +106,6 @@ const heroCarouselStyles = `
     background-color: var(--white);
     color: var(--primary-color);
     padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
     font-weight: 600;
     text-decoration: none;
     display: inline-block;
@@ -132,7 +126,6 @@ const heroCarouselStyles = `
   .carousel-indicators [data-bs-target] {
     width: 8px;
     height: 8px;
-    border-radius: var(--border-radius);
     background-color: rgba(255, 255, 255, 0.5);
     border: none;
     margin: 0 0.25rem;
@@ -166,16 +159,16 @@ const heroCarouselStyles = `
 
   @media (max-width: 767.98px) {
     .hero-carousel-wrapper {
-      height: 300px;
+      height: 280px;
     }
     
     .hero-slide-content {
-      padding: 1.5rem 1rem 1rem;
+      padding: 12px 8px 8px;
     }
     
     .hero-category-badge {
       font-size: 0.8rem;
-      padding: 0.4rem 0.8rem;
+      padding: 6px 10px;
     }
     
     .hero-slide-title {
@@ -183,22 +176,27 @@ const heroCarouselStyles = `
     }
     
     .hero-slide-button {
-      padding: 0.6rem 1.2rem;
+      padding: 8px 16px;
       font-size: 0.9rem;
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 575.98px) {
     .hero-carousel-wrapper {
-      height: 250px;
+      height: 220px;
     }
     
     .hero-slide-content {
-      padding: 1rem 0.75rem 0.75rem;
+      padding: 10px 6px 6px;
     }
     
     .hero-slide-title {
       font-size: 1.1rem;
+    }
+    
+    .hero-slide-button {
+      padding: 6px 12px;
+      font-size: 0.85rem;
     }
   }
 `;

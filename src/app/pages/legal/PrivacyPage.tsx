@@ -148,7 +148,7 @@ const PrivacyPage: React.FC = () => {
               <ul className="list-unstyled">
                 <li><strong>Email:</strong> privacy@alsuk.ug</li>
                 <li><strong>Phone:</strong> +256 783 204 665</li>
-                <li><strong>Address:</strong> Bwera, Kasese, Uganda</li>
+                <li><strong>Address:</strong> Juba, South Sudan</li>
               </ul>
               <p>
                 For data protection inquiries, please include "Privacy Policy" in the subject line of your email.

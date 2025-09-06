@@ -21,6 +21,7 @@ export default defineConfig({
     assetsDir: 'assets',
     minify: 'terser',
     target: 'es2015',
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -28,6 +29,20 @@ export default defineConfig({
           'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
           'vendor-bootstrap': ['react-bootstrap', 'bootstrap'],
           'vendor-ui': ['lucide-react', '@fortawesome/react-fontawesome'],
+          'vendor-routing': ['react-router-dom'],
+        },
+        chunkFileNames: 'assets/js/[name].[hash].js',
+        entryFileNames: 'assets/js/[name].[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name?.split('.') || [];
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext || '')) {
+            return `assets/images/[name].[hash][extname]`;
+          }
+          if (/css/i.test(ext || '')) {
+            return `assets/css/[name].[hash][extname]`;
+          }
+          return `assets/[name].[hash][extname]`;
         },
       },
     },
@@ -35,6 +50,10 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.warn'],
+      },
+      mangle: {
+        safari10: true,
       },
     },
   },

@@ -65,7 +65,6 @@ const MyShop: React.FC = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
 
   // Single useEffect without infinite loop
   useEffect(() => {
@@ -185,18 +184,24 @@ const MyShop: React.FC = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.category_text.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'active' && product.status === '1') ||
-                         (statusFilter === 'inactive' && product.status === '0');
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   return (
     <div className="shop-page">
       <div className="shop-header">
-        <div className="header-content">
-          <h1 className="shop-title">My Products</h1>
+        <div className="header-content single-row">
+          <h1 className="shop-title">Shop Manager</h1>
+          <div className="shop-filters inline">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <div className="header-actions">
             <button 
               onClick={loadProducts} 
@@ -209,29 +214,9 @@ const MyShop: React.FC = () => {
               onClick={() => navigate('/account/my-shop/create')}
               className="add-product-btn"
             >
-              + Add Product
+              + Add
             </button>
           </div>
-        </div>
-
-        {/* Compact Search and Filters - Single Line */}
-        <div className="shop-filters">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <select 
-            className="status-filter"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
         </div>
       </div>
 
@@ -268,13 +253,13 @@ const MyShop: React.FC = () => {
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="shop-empty">
-            {searchQuery || statusFilter !== 'all' ? (
+            {searchQuery ? (
               <>
                 <i className="bi-search"></i>
                 <p>No products found</p>
-                <span>Try adjusting your search or filters</span>
-                <button onClick={() => { setSearchQuery(''); setStatusFilter('all'); }} className="clear-filters-btn">
-                  Clear filters
+                <span>Try adjusting your search</span>
+                <button onClick={() => { setSearchQuery(''); }} className="clear-filters-btn">
+                  Clear search
                 </button>
               </>
             ) : products.length === 0 ? (
@@ -292,89 +277,59 @@ const MyShop: React.FC = () => {
             ) : (
               <>
                 <i className="bi-filter"></i>
-                <p>No products match your filters</p>
-                <span>Try different search terms or status filters</span>
-                <button onClick={() => { setSearchQuery(''); setStatusFilter('all'); }} className="clear-filters-btn">
-                  Clear all filters
+                <p>No products match your search</p>
+                <span>Try different search terms</span>
+                <button onClick={() => { setSearchQuery(''); }} className="clear-filters-btn">
+                  Clear search
                 </button>
               </>
             )}
           </div>
         ) : (
-          <div className="products-list">
+          <div className="products-list list-view">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="product-item">
-                {/* Product Actions Overlay */}
-                <div className="product-actions">
-                  <button 
-                    onClick={() => handleEditProduct(product.id)}
-                    className="action-btn edit-btn"
-                    title="Edit product"
-                  >
-                    <i className="bi-pencil"></i>
-                  </button>
-                  
-                  <button 
-                    onClick={() => handleDeleteProduct(product.id)}
-                    className="action-btn delete-btn"
-                    title="Delete product"
-                  >
-                    <i className="bi-trash"></i>
-                  </button>
-                  
-                  <button className="action-btn more-btn" title="More options">
-                    <i className="bi-three-dots"></i>
-                  </button>
-                </div>
-
-                {/* Product Image */}
-                <div className="product-image">
-                  <img 
-                    src={formatImageUrl(product.feature_photo)} 
-                    alt={product.name}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/media/svg/files/blank-image.svg';
-                    }}
-                  />
-                  <div className="product-status-overlay">
-                    <span className={`status-badge ${product.status === '1' ? 'active' : 'inactive'}`}>
-                      {product.status === '1' ? 'Active' : 'Inactive'}
-                    </span>
+              <div key={product.id} className="product-item minimal list-card">
+                <div className="list-card-inner">
+                  <div className="list-card-image">
+                    <img 
+                      src={formatImageUrl(product.feature_photo)} 
+                      alt={product.name}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/media/svg/files/blank-image.svg';
+                      }}
+                    />
                   </div>
-                </div>
-                
-                {/* Product Content */}
-                <div className="product-content">
-                  <div className="product-header">
-                    <h3 className="product-name">{product.name}</h3>
+                  <div className="list-card-info">
+                    <div className="list-card-header">
+                      <h3 className="product-name">{product.name}</h3>
+                      <span className={`status-badge small ${product.status === '1' ? 'active' : 'inactive'}`}>{product.status === '1' ? 'Active' : 'Inactive'}</span>
+                    </div>
                     <div className="product-price">{formatPrice(product.price_1)}</div>
-                  </div>
-                  
-                  <div className="product-details">
-                    <div className="product-category">
-                      <i className="bi-tag"></i>
-                      <span>{product.category_text}</span>
+                    <div className="product-details">
+                      <span className="product-category">{product.category_text}</span>
+                      <span className="product-location">{product.supplier}</span>
                     </div>
-                    
-                    <div className="product-location">
-                      <i className="bi-geo-alt"></i>
-                      <span>{product.supplier}</span>
+                    <div className="product-description">{product.description}</div>
+                    <div className="product-meta">
+                      <span className={`stock-status ${product.in_stock === '1' ? 'in-stock' : 'out-of-stock'}`}>{product.in_stock === '1' ? 'In Stock' : 'Out of Stock'}</span>
+                      <span className="contact-phone">{product.url}</span>
                     </div>
-                  </div>
-                  
-                  <div className="product-description">
-                    {product.description}
-                  </div>
-                  
-                  <div className="product-meta">
-                    <span className={`stock-status ${product.in_stock === '1' ? 'in-stock' : 'out-of-stock'}`}>
-                      <i className={`bi-${product.in_stock === '1' ? 'check-circle' : 'x-circle'}`}></i>
-                      {product.in_stock === '1' ? 'In Stock' : 'Out of Stock'}
-                    </span>
-                    <span className="contact-phone">
-                      <i className="bi-telephone"></i>
-                      {product.url}
-                    </span>
+                    <div className="product-actions minimal">
+                      <button 
+                        onClick={() => handleEditProduct(product.id)}
+                        className="action-btn edit-btn"
+                        title="Edit product"
+                      >
+                        <i className="bi-pencil"></i>
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteProduct(product.id)}
+                        className="action-btn delete-btn"
+                        title="Delete product"
+                      >
+                        <i className="bi-trash"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

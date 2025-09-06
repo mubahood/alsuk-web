@@ -7,19 +7,15 @@ import { productsApi } from '../services/productsApi';
 import { realProductsApi } from '../services/realProductsApi';
 
 // Import your Redux slices
-import cartReducer from './slices/cartSlice';
 import authReducer from './slices/authSlice';
 import notificationReducer from './slices/notificationSlice';
-import wishlistReducer from './slices/wishlistSlice';
 import userReducer from './slices/userSlice';
 import manifestReducer from './slices/manifestSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    cart: cartReducer,
     notification: notificationReducer,
-    wishlist: wishlistReducer,
     manifest: manifestReducer,
     // Add the API reducers
     [productsApi.reducerPath]: productsApi.reducer,
@@ -52,8 +48,7 @@ export const store = configureStore({
         ignoredPaths: [
           'realProductsApi', 
           'productsApi', 
-          'auth.user', 
-          'cart.items'
+          'auth.user'
         ],
       },
     }).concat(

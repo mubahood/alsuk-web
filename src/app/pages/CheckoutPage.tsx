@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Spinner, Alert, Modal } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { OrderModel } from '../models/OrderModel';
-import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils';
 import ToastService from '../services/ToastService';
 import { http_post } from '../services/Api';
@@ -366,14 +365,13 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { order: initialOrder } = (location.state as LocationState) || {};
-  const { cartItems, getFormattedTotal, clearCart } = useCart();
 
   // Early validation to prevent crashes
   useEffect(() => {
-    if (!initialOrder || cartItems.length === 0) {
-      navigate('/cart');
+    if (!initialOrder) {
+      navigate('/products');
     }
-  }, [initialOrder, cartItems.length, navigate]);
+  }, [initialOrder, navigate]);
 
   const [order, setOrder] = useState<OrderModel>(() => {
     // Create order with proper initialization and safety checks
@@ -387,15 +385,15 @@ const CheckoutPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // Calculate totals with safety checks
-  const cartTotal = parseFloat(getFormattedTotal().replace(/[^0-9.-]+/g, '')) || 0;
+  // Calculate totals directly from order
+  const orderTotal = parseFloat(order?.order_total || '0') || 0;
   const deliveryAmount = parseFloat(order?.delivery_amount || '0') || 0;
   const payableAmount = parseFloat(order?.payable_amount || '0') || 0;
-  const finalTotal = cartTotal + deliveryAmount;
+  const finalTotal = orderTotal + deliveryAmount;
 
   useEffect(() => {
-    if (!initialOrder || cartItems.length === 0) {
-      navigate('/cart');
+    if (!initialOrder) {
+      navigate('/products');
       return;
     }
 
@@ -405,12 +403,11 @@ const CheckoutPage: React.FC = () => {
       const currentOrder = OrderModelUtils.ensureOrderModel(prevOrder);
       
       // Update calculated values
-      currentOrder.order_total = cartTotal.toString();
-      currentOrder.payable_amount = (cartTotal + deliveryAmount).toString(); // Items total + delivery (before tax)
+      currentOrder.payable_amount = (orderTotal + deliveryAmount).toString(); // Items total + delivery (before tax)
       
       return currentOrder;
     });
-  }, [cartTotal, deliveryAmount, initialOrder, cartItems.length, navigate]);
+  }, [orderTotal, deliveryAmount, initialOrder, navigate]);
 
   const submitOrder = async () => {
     try {
@@ -424,19 +421,12 @@ const CheckoutPage: React.FC = () => {
       // Validate order data
       if (!order || typeof order !== 'object') {
         setErrorMessage('Order information is invalid. Please restart the checkout process.');
-        navigate('/cart');
+        navigate('/products');
         return;
       }
 
       if (!order.customer_name || !order.customer_phone_number_1) {
         setErrorMessage('Order information is incomplete. Please go back and fill all required fields.');
-        return;
-      }
-
-      // Validate cart items
-      if (!cartItems || cartItems.length === 0) {
-        setErrorMessage('Your cart is empty. Please add items before checkout.');
-        navigate('/cart');
         return;
       }
 
@@ -450,7 +440,7 @@ const CheckoutPage: React.FC = () => {
 
       // Submit order to API with exact same structure as Dart
       const response = await http_post('orders-create', {
-        items: JSON.stringify(cartItems),
+        items: JSON.stringify([]), // Empty items array since no cart
         delivery: JSON.stringify(deliveryData),
       });
 
@@ -481,9 +471,6 @@ const CheckoutPage: React.FC = () => {
         return;
       }
 
-      // Clear cart after successful order submission (like Dart: await CartItem.deleteAll())
-      await clearCart();
-
       ToastService.success('Order submitted successfully!', { autoClose: 4000 });
 
       // Navigate to payment page for immediate payment processing
@@ -510,11 +497,11 @@ const CheckoutPage: React.FC = () => {
     setShowConfirmModal(true);
   };
 
-  if (!initialOrder || cartItems.length === 0) {
+  if (!initialOrder) {
     return (
       <Container className="py-5">
         <Alert variant="warning">
-          Your cart is empty or order information is missing. Please start from the cart.
+          Order information is missing. Please start from the products page.
         </Alert>
       </Container>
     );
@@ -556,7 +543,7 @@ const CheckoutPage: React.FC = () => {
                   </p>
                 </div>
                 <div className="summary-item-amount">
-                  {formatPrice(cartTotal.toString())}
+                  {formatPrice(orderTotal.toString())}
                 </div>
               </div>
               <div className="summary-divider"></div>

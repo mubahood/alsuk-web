@@ -105,8 +105,8 @@ const AccountProfile: React.FC = () => {
     try {
       const response = await ApiService.updateProfile({
         ...profile,
-        phone_number_1: profile.phone_number,
-        date_of_birth: profile.dob
+        phone_number: profile.phone_number,
+        dob: profile.dob
       });
 
       if (response.success) {

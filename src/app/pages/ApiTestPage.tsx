@@ -13,14 +13,12 @@ import {
 import ProductModel from '../models/ProductModel';
 import CategoryModel from '../models/CategoryModel';
 import ApiService from '../services/ApiService';
-import CartService from '../services/CartService';
 import ToastService from '../services/ToastService';
 
 const ApiTestPage: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<number>(134);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>();
-  const [cartItemCount, setCartItemCount] = useState<number>(0);
 
   // RTK Query hooks
   const { 
@@ -59,35 +57,6 @@ const ApiTestPage: React.FC = () => {
     { skip: !searchTerm || searchTerm.length < 2 }
   );
 
-  // Update cart item count
-  useEffect(() => {
-    const updateCartCount = () => {
-      setCartItemCount(CartService.getCartItemCount());
-    };
-    
-    updateCartCount();
-    
-    // Listen for storage changes
-    window.addEventListener('storage', updateCartCount);
-    
-    return () => {
-      window.removeEventListener('storage', updateCartCount);
-    };
-  }, []);
-
-  const handleAddToCart = async (product: ProductModel) => {
-    const success = CartService.addToCart(
-      product.id,
-      1,
-      {},
-      { name: product.name, price: product.price_1 }
-    );
-    
-    if (success) {
-      setCartItemCount(CartService.getCartItemCount());
-    }
-  };
-
   const testApiMethods = async () => {
     try {
       ToastService.info("Testing API methods...");
@@ -104,53 +73,21 @@ const ApiTestPage: React.FC = () => {
     }
   };
 
-  const testCartFunctions = async () => {
-    try {
-      ToastService.info("Testing cart functions...");
-      
-      // Add some test items to cart
-      CartService.addToCart(1, 2, { color: 'red' }, { name: 'Test Product 1', price: '100000' });
-      CartService.addToCart(2, 1, { size: 'large' }, { name: 'Test Product 2', price: '200000' });
-      
-      console.log('Cart Items:', CartService.getCartItems());
-      console.log('Cart Count:', CartService.getCartItemCount());
-      console.log('Is Product 1 in cart:', CartService.isInCart(1, { color: 'red' }));
-      console.log('Product 1 quantity:', CartService.getProductQuantity(1, { color: 'red' }));
-      
-      const total = await CartService.getCartTotal();
-      const formattedTotal = await CartService.getFormattedCartTotal();
-      console.log('Cart Total:', total);
-      console.log('Formatted Total:', formattedTotal);
-      
-      setCartItemCount(CartService.getCartItemCount());
-      ToastService.success("Cart functions tested! Check console for results.");
-    } catch (error) {
-      ToastService.error("Cart test failed: " + error);
-      console.error('Cart Test Error:', error);
-    }
-  };
-
   return (
     <Container className="py-5">
       <Row className="mb-4">
         <Col>
           <h1>API Integration Test Page</h1>
           <p className="text-muted">
-            Testing real Laravel API endpoints and cart functionality.
+            Testing real Laravel API endpoints.
           </p>
           <div className="d-flex gap-2 mb-3">
             <Button variant="primary" onClick={testApiMethods}>
               Test API Methods
             </Button>
-            <Button variant="success" onClick={testCartFunctions}>
-              Test Cart Functions
-            </Button>
             <Button variant="info" onClick={() => window.location.reload()}>
               Refresh Page
             </Button>
-            <span className="ms-auto badge bg-secondary fs-6">
-              Cart Items: {cartItemCount}
-            </span>
           </div>
         </Col>
       </Row>
@@ -247,13 +184,6 @@ const ApiTestPage: React.FC = () => {
                           <div className="d-flex gap-1">
                             <Button 
                               size="sm" 
-                              variant="primary"
-                              onClick={() => handleAddToCart(product)}
-                            >
-                              Add to Cart
-                            </Button>
-                            <Button 
-                              size="sm" 
                               variant="outline-info"
                               onClick={() => setSelectedProductId(product.id)}
                             >
@@ -302,13 +232,6 @@ const ApiTestPage: React.FC = () => {
                           <Card.Body>
                             <h6>{product.name}</h6>
                             <p className="text-success">{product.getFormattedPrice()}</p>
-                            <Button 
-                              size="sm" 
-                              variant="primary"
-                              onClick={() => handleAddToCart(product)}
-                            >
-                              Add to Cart
-                            </Button>
                           </Card.Body>
                         </Card>
                       </Col>
@@ -368,13 +291,6 @@ const ApiTestPage: React.FC = () => {
                         <div className="col-sm-8">{singleProduct.getSizes().join(', ')}</div>
                       </div>
                     )}
-                    <Button 
-                      variant="primary" 
-                      size="lg"
-                      onClick={() => handleAddToCart(singleProduct)}
-                    >
-                      Add to Cart
-                    </Button>
                   </Col>
                 </Row>
               )}
@@ -437,9 +353,6 @@ const ApiTestPage: React.FC = () => {
                 </Link>
                 <Link to="/categories" className="btn btn-outline-primary">
                   Categories Page
-                </Link>
-                <Link to="/cart" className="btn btn-outline-primary">
-                  Cart ({cartItemCount})
                 </Link>
                 <Link to="/account" className="btn btn-outline-primary">
                   Account

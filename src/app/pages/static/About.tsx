@@ -28,7 +28,7 @@ const About: React.FC = () => {
     {
       icon: "bi-globe",
       title: "Community Impact",
-      description: "We're committed to supporting local businesses and contributing to Uganda's economic growth."
+      description: "We're committed to supporting local businesses and contributing to South Sudan's economic growth."
     }
   ];
 
@@ -36,7 +36,7 @@ const About: React.FC = () => {
     {
       year: "2023",
       title: "Company Founded",
-      description: "AL-SUK was established with a vision to revolutionize e-commerce in Uganda."
+      description: "AL-SUK was established with a vision to revolutionize marketplace trading in South Sudan."
     },
     {
       year: "2024",
@@ -46,7 +46,7 @@ const About: React.FC = () => {
     {
       year: "2024",
       title: "Vendor Network Growth",
-      description: "Expanded our vendor network to include hundreds of trusted sellers across Uganda."
+      description: "Expanded our vendor network to include hundreds of trusted sellers across South Sudan."
     },
     {
       year: "2025",
@@ -58,27 +58,27 @@ const About: React.FC = () => {
   return (
     <StaticPageLayout
       title="About AL-SUK"
-      subtitle="Uganda's leading e-commerce platform connecting buyers and sellers nationwide"
+      subtitle="South Sudan's premier buy and sell marketplace connecting buyers and sellers nationwide"
       breadcrumbs={breadcrumbs}
     >
       <div>
         <h2>Our Story</h2>
-        <p>
-          AL-SUK was born from a simple yet powerful vision: to create Uganda's most trusted and 
-          convenient e-commerce platform. We recognized the need for a reliable online marketplace 
-          that could connect buyers with quality products while supporting local businesses and vendors.
+                <p>
+          AL-SUK was born from a simple yet powerful vision: to create South Sudan's most trusted and 
+          convenient marketplace platform. Founded with deep understanding of the local market dynamics, 
+          we recognized the unique challenges faced by both buyers and sellers in the South Sudanese market. 
+          Our mission has always been to bridge the gap between quality products and discerning customers, 
+          ensuring that every transaction on our platform is secure, reliable, and beneficial for all parties involved.
         </p>
         <p>
-          Since our inception, we've been committed to providing exceptional customer service, 
-          ensuring product quality, and building a platform that serves the unique needs of the 
-          Ugandan market. Today, we're proud to be a leading force in Uganda's digital commerce landscape.
+          Since our inception, we have grown to become a cornerstone of digital commerce in the South 
+          Sudanese market. Today, we're proud to be a leading force in South Sudan's digital commerce landscape.
         </p>
 
         <h2>Our Mission</h2>
-        <p>
-          To provide Uganda with the most reliable, convenient, and secure e-commerce platform that 
-          connects customers with quality products while empowering local businesses to thrive in 
-          the digital economy.
+                <p>
+          To provide South Sudan with the most reliable, convenient, and secure marketplace platform that 
+          empowers both buyers and sellers to thrive in the digital economy while promoting local business growth.
         </p>
 
         <h2>Our Vision</h2>
@@ -104,7 +104,7 @@ const About: React.FC = () => {
           <li><strong>Wide Product Range:</strong> From electronics to fashion, home goods to personal care</li>
           <li><strong>Verified Vendors:</strong> All our sellers are carefully vetted for quality and reliability</li>
           <li><strong>Secure Payments:</strong> Multiple payment options with bank-level security</li>
-          <li><strong>Fast Delivery:</strong> Reliable delivery across Uganda with real-time tracking</li>
+          <li><strong>Fast Delivery:</strong> Reliable delivery across South Sudan with real-time tracking</li>
           <li><strong>Customer Support:</strong> 24/7 support to help with any questions or issues</li>
           <li><strong>Mobile Experience:</strong> Full-featured mobile apps for iOS and Android</li>
         </ul>
@@ -158,7 +158,7 @@ const About: React.FC = () => {
 
         <h2>Why Choose AL-SUK?</h2>
         <ul>
-          <li><strong>Local Understanding:</strong> We understand the Ugandan market and customer needs</li>
+          <li><strong>Local Understanding:</strong> We understand the South Sudanese market and customer needs</li>
           <li><strong>Quality Assurance:</strong> Rigorous quality control ensures you get genuine products</li>
           <li><strong>Competitive Pricing:</strong> We work with vendors to offer the best prices</li>
           <li><strong>Reliable Service:</strong> Consistent, dependable service you can count on</li>
@@ -272,7 +272,7 @@ const About: React.FC = () => {
         <div className="static-app-download">
           <h3 className="static-app-title">Join Our Community</h3>
           <p className="static-app-description">
-            Be part of Uganda's growing e-commerce community. Start shopping with us today!
+            Be part of South Sudan's growing marketplace community. Start trading with us today!
           </p>
           <div className="static-app-buttons">
             <a href="/products" className="static-app-button">

@@ -1,7 +1,7 @@
 /* ===================================================================
    AL-SUK Core Stylesheet - CONSISTENT SQUARE DESIGN
    Version: 7.0 (Square, Minimal, Consistent)
-   Brand: AL-SUK - Uganda's Premier Marketplace
+   Brand: AL-SUK - South Sudan'sPremier Marketplace
    =================================================================== */
 
 /* ===================================================================
@@ -3437,7 +3437,7 @@ body:has(.account-layout-wrapper) .footer {
 }
 
 .contact-item i {
-  color: var(--accent-color);
+  color: #F75E1E;
   font-size: var(--font-size-lg);
   width: 20px;
   flex-shrink: 0;
@@ -3452,7 +3452,7 @@ body:has(.account-layout-wrapper) .footer {
 }
 
 .contact-item a:hover {
-  color: var(--accent-color);
+  color: #F75E1E;
   text-decoration: none;
 }
 
@@ -3473,7 +3473,7 @@ body:has(.account-layout-wrapper) .footer {
   left: 0;
   width: 30px;
   height: 2px;
-  background: var(--accent-color);
+  background: #F75E1E;
 }
 
 /* Footer Links */
@@ -3503,12 +3503,12 @@ body:has(.account-layout-wrapper) .footer {
   bottom: 0;
   width: 0;
   height: 1px;
-  background: var(--accent-color);
+  background: #F75E1E;
   transition: width 0.3s ease;
 }
 
 .footer-link:hover {
-  color: var(--accent-color);
+  color: #F75E1E;
   text-decoration: none;
   transform: translateX(6px);
 }
@@ -3570,11 +3570,11 @@ body:has(.account-layout-wrapper) .footer {
 
 .social-link-compact:hover {
   color: var(--white);
-  background: var(--accent-color);
+  background: #F75E1E;
   text-decoration: none;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(215, 21, 41, 0.3);
-  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(247, 94, 30, 0.3);
+  border-color: #F75E1E;
 }
 
 /* Compact App Links */
@@ -3609,7 +3609,7 @@ body:has(.account-layout-wrapper) .footer {
   background: rgba(255, 255, 255, 0.15);
   text-decoration: none;
   transform: translateY(-2px);
-  border-color: var(--accent-color);
+  border-color: #F75E1E;
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
@@ -3661,7 +3661,7 @@ body:has(.account-layout-wrapper) .footer {
 }
 
 .footer-bottom-link:hover {
-  color: var(--accent-color);
+  color: #F75E1E;
   text-decoration: none;
   background: rgba(255, 255, 255, 0.05);
 }

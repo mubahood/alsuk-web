@@ -14,7 +14,6 @@ import {
 import { useGetProductByIdQuery, useGetProductsQuery } from "../../services/realProductsApi";
 import { ProductModel } from "../../models/ProductModel";
 import { useDispatch } from "react-redux";
-import { useCart } from "../../hooks/useCart";
 import { showNotification } from "../../store/slices/notificationSlice";
 import ProductCard2 from "../../components/shared/ProductCard2";
 
@@ -26,7 +25,6 @@ const ProductDetailPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addToCart: addToCartHook } = useCart();
 
   const productId = useMemo(() => parseInt(id || "0", 10), [id]);
 
@@ -119,23 +117,13 @@ const ProductDetailPage: React.FC = () => {
         return;
       }
 
-      // Convert variantsSelection to CartVariant format
-      const variant = {
-        color: variantsSelection.Color || variantsSelection.color || '',
-        size: variantsSelection.Size || variantsSelection.size || '',
-        ...variantsSelection
-      };
-
-      console.log('Adding to cart:', { product: product?.name, quantity, variant });
-
-      if (product) {
-        const success = await addToCartHook(product, quantity, variant);
-        
-        if (success) {
-          setQuantity(1);
-          // Don't clear variants selection as user might want to add more
-        }
-      }
+      // Cart functionality has been removed
+      dispatch(
+        showNotification({
+          message: "Cart functionality is not available. Contact seller directly to purchase.",
+          type: "info",
+        })
+      );
     } catch (error) {
       console.error('Error in onAddToCart:', error);
       dispatch(
@@ -158,27 +146,13 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
 
-    // Convert variantsSelection to CartVariant format
-    const variant = {
-      color: variantsSelection.Color || variantsSelection.color || '',
-      size: variantsSelection.Size || variantsSelection.size || '',
-      ...variantsSelection
-    };
-
-    if (product) {
-      const success = await addToCartHook(product, quantity, variant);
-      
-      if (success) {
-        // Navigate to checkout page
-        // TODO: Add navigation to checkout
-        dispatch(
-          showNotification({
-            message: `Proceeding to checkout with ${quantity} × ${product.name}.`,
-            type: "info",
-          })
-        );
-      }
-    }
+    // Direct purchase without cart
+    dispatch(
+      showNotification({
+        message: `Buy now functionality coming soon. Contact seller directly for ${product?.name}.`,
+        type: "info",
+      })
+    );
   };
 
   const renderStars = (rate: number) => {

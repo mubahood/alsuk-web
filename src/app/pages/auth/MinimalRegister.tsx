@@ -175,15 +175,27 @@ const MinimalRegister: React.FC = () => {
       <div style={brandingStyles} className="d-none d-lg-flex">
         <div>
           <Link to="/" className="text-white text-decoration-none mb-4 d-block">
-            <img
-              src="/media/logos/logo-white.png"
-              alt={APP_CONFIG.NAME}
-              style={{ maxHeight: '60px', marginBottom: 'var(--spacing-lg)' }}
-              onError={(e) => {
-                e.currentTarget.src = "/media/logos/logo.png";
-                e.currentTarget.style.filter = "brightness(0) invert(1)";
-              }}
-            />
+            <div style={{
+              backgroundColor: 'white',
+              padding: '16px 24px',
+              borderRadius: '12px',
+              marginBottom: '2rem',
+              display: 'inline-block'
+            }}>
+              <img
+                src="/media/logos/alsuk-logo.png"
+                alt={APP_CONFIG.NAME}
+                style={{ 
+                  maxHeight: '60px', 
+                  maxWidth: '180px',
+                  objectFit: 'contain'
+                }}
+                onError={(e) => {
+                  // Fallback to other AL-SUK logo if primary doesn't exist
+                  e.currentTarget.src = '/media/logos/alsuk-logo-2.png';
+                }}
+              />
+            </div>
           </Link>
           <h1 style={{ 
             fontSize: 'var(--font-size-3xl)', 
@@ -228,7 +240,7 @@ const MinimalRegister: React.FC = () => {
       <div style={formPanelStyles}>
         <div style={{ width: '100%', maxWidth: '400px', padding: 0 }}>
           {/* Mobile Logo */}
-          <div className="text-center mb-4 d-lg-none">
+          <div className="text-center mb-4 d-lg-none ">
             <Link to="/">
               <img
                 src="/media/logos/logo.png"

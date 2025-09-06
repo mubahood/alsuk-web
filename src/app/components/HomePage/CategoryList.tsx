@@ -4,12 +4,11 @@ import { Link } from "react-router-dom";
 import { Spinner, Alert } from "react-bootstrap";
 import { useManifestCategories, useManifest } from "../../hooks/useManifest";
 
-// Inline styles for CategoryList following the unified design system
+// Inline styles for CategoryList following professional boxed design
 const categoryListStyles = `
   .category-list-wrapper {
     background-color: var(--white);
     border: 1px solid var(--border-color-light);
-    border-radius: var(--border-radius);
     padding: 0;
     height: 100%;
     overflow: hidden;
@@ -24,8 +23,8 @@ const categoryListStyles = `
   .category-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1.25rem;
+    gap: 12px;
+    padding: 12px 16px;
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-color-dark);
@@ -71,18 +70,19 @@ const categoryListStyles = `
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 32px;
     height: 100%;
   }
 
   .category-error {
-    padding: 1rem;
+    padding: 16px;
   }
 
   @media (max-width: 1199.98px) {
     .category-item {
-      padding: 0.75rem 1rem;
+      padding: 10px 12px;
       font-size: 0.85rem;
+      gap: 10px;
     }
     
     .category-item i {
@@ -94,6 +94,14 @@ const categoryListStyles = `
   @media (max-width: 991.98px) {
     .category-list-wrapper {
       display: none;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .category-item {
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      gap: 8px;
     }
   }
 `;

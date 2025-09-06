@@ -19,7 +19,7 @@ const Help: React.FC = () => {
         },
         {
           question: "What are the delivery timeframes?",
-          answer: "Delivery typically takes 1-3 business days within Kampala and 2-7 business days for other areas in Uganda, depending on the location and product availability."
+          answer: "Delivery typically takes 1-3 business days within Juba and 2-7 business days for other areas in South Sudan, depending on the location and product availability."
         },
         {
           question: "Can I change my delivery address?",

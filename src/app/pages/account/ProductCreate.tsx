@@ -894,7 +894,7 @@ const ProductCreate: React.FC = () => {
               <button
                 type="submit"
                 className="submit-button"
-                disabled={submitting || submitSuccess}
+                disabled={submitting || !!submitSuccess}
               >
                 {submitting ? 'Creating Product...' : submitSuccess ? 'Product Created!' : 'Create Product'}
               </button>
