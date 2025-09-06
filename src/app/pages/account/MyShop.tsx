@@ -21,7 +21,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { http_get, http_post } from '../../services/Api';
 import Utils from '../../services/Utils';
-import { DB_LOGGED_IN_PROFILE } from '../../../Constants';
+import { DB_LOGGED_IN_PROFILE, CURRENCY } from '../../../Constants';
 import './MyShop.css';
 
 interface Product {
@@ -162,7 +162,7 @@ const MyShop: React.FC = () => {
   const formatPrice = (price: string) => {
     return new Intl.NumberFormat('en-UG', {
       style: 'currency',
-      currency: 'UGX',
+      currency: CURRENCY,
       minimumFractionDigits: 0
     }).format(parseInt(price));
   };

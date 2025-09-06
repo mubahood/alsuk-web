@@ -8,6 +8,7 @@ import PaymentGatewaySelector from '../components/payment/PaymentGatewaySelector
 import PaymentStatus from '../components/payment/PaymentStatus';
 import ToastService from '../services/ToastService';
 import DynamicBreadcrumb from '../components/shared/DynamicBreadcrumb';
+import { CURRENCY } from '../../Constants';
 import './PaymentPage.css';
 
 const PaymentPage: React.FC = () => {
@@ -158,17 +159,17 @@ const PaymentPage: React.FC = () => {
                   </h6>
                   <div className="d-flex justify-content-between align-items-center mb-2">
                     <span>Order Total:</span>
-                    <span className="fw-semibold">{parseFloat(order.order_total || '0').toLocaleString('en-UG', { style: 'currency', currency: 'UGX' })}</span>
+                    <span className="fw-semibold">{parseFloat(order.order_total || '0').toLocaleString('en-UG', { style: 'currency', currency: CURRENCY })}</span>
                   </div>
                   <div className="d-flex justify-content-between align-items-center mb-2">
                     <span>Delivery Fee:</span>
-                    <span className="fw-semibold">{parseFloat(order.delivery_amount || '0').toLocaleString('en-UG', { style: 'currency', currency: 'UGX' })}</span>
+                    <span className="fw-semibold">{parseFloat(order.delivery_amount || '0').toLocaleString('en-UG', { style: 'currency', currency: CURRENCY })}</span>
                   </div>
                   <hr />
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="fw-bold">Amount to Pay:</span>
                     <span className="fw-bold text-primary fs-5">
-                      {parseFloat(order.payable_amount || order.amount || '0').toLocaleString('en-UG', { style: 'currency', currency: 'UGX' })}
+                      {parseFloat(order.payable_amount || order.amount || '0').toLocaleString('en-UG', { style: 'currency', currency: CURRENCY })}
                     </span>
                   </div>
                 </Card.Body>

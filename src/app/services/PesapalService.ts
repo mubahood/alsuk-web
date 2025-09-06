@@ -1,6 +1,7 @@
 // src/app/services/PesapalService.ts
 import { http_post, http_get } from './Api';
 import ToastService from './ToastService';
+import { CURRENCY } from '../../Constants';
 
 export interface PesapalInitializeRequest {
   order_id: number;
@@ -238,7 +239,7 @@ class PesapalService {
   /**
    * Format payment amount for display
    */
-  static formatAmount(amount: number, currency: string = 'UGX'): string {
+  static formatAmount(amount: number, currency: string = CURRENCY): string {
     return new Intl.NumberFormat('en-UG', {
       style: 'currency',
       currency: currency,

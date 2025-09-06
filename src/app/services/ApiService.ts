@@ -363,8 +363,8 @@ export class ApiService {
         },
         delivery_locations: [],
         settings: {
-          currency: "IQD",
-          currency_symbol: "د.ع",
+          currency: "UGX",
+          currency_symbol: "UGX",
           tax_rate: 0,
           delivery_fee_varies: false,
           min_order_amount: 0
