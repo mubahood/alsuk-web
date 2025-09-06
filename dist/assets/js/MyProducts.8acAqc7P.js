@@ -1,0 +1,1 @@
+import{j as s}from"./vendor-bootstrap.BZxWRyST.js";import"./vendor-react.CSr-5IoM.js";const e=()=>s.jsx("div",{className:"container mt-4",children:s.jsxs("div",{className:"alert alert-info",children:[s.jsx("h3",{children:"My Products"}),s.jsx("p",{children:"This component is temporarily simplified. Features coming soon."})]})});export{e as default};
